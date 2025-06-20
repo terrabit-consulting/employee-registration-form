@@ -2,220 +2,319 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Employment Application</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      background: #f9f9f9;
-    }
-    .container {
-      max-width: 960px;
-      margin: 0 auto;
-      padding: 30px;
-      background: #fff;
-      border-radius: 8px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
-      display: flex;
-      justify-content: space-between;
-    }
-    .form-content {
-      flex: 1;
-      padding-right: 40px;
-    }
-    .form-section {
-      display: none;
-    }
-    .form-section.active {
-      display: block;
-    }
-    .progress-bar {
-      height: 8px;
-      background: #e0e0e0;
-      border-radius: 5px;
-      margin-bottom: 20px;
-    }
-    .progress {
-      height: 8px;
-      background: #4caf50;
-      border-radius: 5px;
-      width: 0%;
-      transition: width 0.3s ease;
-    }
-    label {
-      display: block;
-      margin-top: 15px;
-      font-weight: bold;
-    }
-    input, select {
-      width: 100%;
-      padding: 8px;
-      margin-top: 5px;
-      box-sizing: border-box;
-    }
-    .button-row {
-      margin-top: 30px;
-      display: flex;
-      justify-content: space-between;
-    }
-    button {
-      padding: 10px 20px;
-      background: #4caf50;
-      color: #fff;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-    }
-    button:disabled {
-      background: #aaa;
-      cursor: not-allowed;
-    }
-    .logo {
-      max-width: 150px;
-      margin-left: 20px;
-    }
-  </style>
+  <title>Employment Form</title>
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
 
-<div class="container">
-  <div class="form-content">
-    <div class="progress-bar"><div class="progress" id="progress"></div></div>
+<div class="form-wrapper">
+  <div class="form-container">
+    <div class="progress-bar">
+      <div class="progress" id="progress" style="width: 10%;"></div>
+    </div>
 
     <form id="multiStepForm">
-      <!-- Step 1: Personal Details -->
-      <div class="form-section active">
-        <h2>Personal Particulars</h2>
+      <!-- All form sections are added here -->
+      <!-- I will include all 10 sections in a follow-up message to avoid length cutoff -->
 
-        <label for="fullName">Full Name *</label>
-        <input type="text" id="fullName" name="fullName" required />
+<!-- SECTION 1: Personal Particulars -->
+<div class="form-section active">
+  <h2>Personal Particulars</h2>
 
-        <label for="dob">Date of Birth *</label>
-        <input type="date" id="dob" name="dob" required />
+  <label>Full Name *</label>
+  <input type="text" name="fullName" required />
 
-        <label for="gender">Gender *</label>
-        <select id="gender" name="gender" required>
-          <option value="">-- Select --</option>
-          <option value="Male">Male</option>
-          <option value="Female">Female</option>
-          <option value="Other">Other</option>
-        </select>
+  <label>Date of Birth *</label>
+  <input type="date" name="dob" required />
 
-        <label for="maritalStatus">Marital Status *</label>
-        <select id="maritalStatus" name="maritalStatus" onchange="toggleOtherField(this, 'otherMaritalDiv')" required>
-          <option value="">-- Select --</option>
-          <option value="Single">Single</option>
-          <option value="Married">Married</option>
-          <option value="Other">Other</option>
-        </select>
-        <div id="otherMaritalDiv" style="display: none;">
-          <label>If Other, specify:</label>
-          <input type="text" id="otherMarital" name="otherMarital">
-        </div>
+  <label>Age *</label>
+  <input type="number" name="age" required />
 
-        <div class="button-row">
-          <button type="button" onclick="nextSection()">Next</button>
-        </div>
-      </div>
+  <label>Gender *</label>
+  <select name="gender" required>
+    <option value="">-- Select --</option>
+    <option>Male</option>
+    <option>Female</option>
+    <option>Other</option>
+  </select>
 
-      <!-- Step 2: Contact -->
-      <div class="form-section">
-        <h2>Contact Information</h2>
-
-        <label for="email">Email *</label>
-        <input type="email" id="email" name="email" required />
-
-        <label for="mobile">Mobile Number *</label>
-        <input type="tel" id="mobile" name="mobile" required />
-
-        <label for="bank">Bank *</label>
-        <select id="bank" name="bank" onchange="toggleOtherField(this, 'otherBankDiv')" required>
-          <option value="">-- Select --</option>
-          <option value="Maybank">Maybank</option>
-          <option value="CIMB">CIMB</option>
-          <option value="Other">Other</option>
-        </select>
-        <div id="otherBankDiv" style="display: none;">
-          <label>If Other Bank, specify here:</label>
-          <input type="text" id="otherBank" name="otherBank">
-        </div>
-
-        <div class="button-row">
-          <button type="button" onclick="prevSection()">Previous</button>
-          <button type="button" onclick="nextSection()">Next</button>
-        </div>
-      </div>
-
-      <!-- Step 3: Submission -->
-      <div class="form-section">
-        <h2>Confirm & Submit</h2>
-
-        <p>Review your information. Once submitted, the form will be emailed to HR.</p>
-
-        <div class="button-row">
-          <button type="button" onclick="prevSection()">Previous</button>
-          <button type="submit">Submit</button>
-        </div>
-      </div>
-    </form>
+  <label>Marital Status *</label>
+  <select name="maritalStatus" onchange="toggleOtherField(this, 'maritalOtherDiv')" required>
+    <option value="">-- Select --</option>
+    <option>Single</option>
+    <option>Married</option>
+    <option>Other</option>
+  </select>
+  <div id="maritalOtherDiv" style="display: none;">
+    <label>If Other, specify:</label>
+    <input type="text" name="maritalOther" />
   </div>
-  <img src="logo.png" class="logo" alt="Company Logo">
+
+  <label>Citizenship *</label>
+  <select name="citizenship" onchange="toggleOtherField(this, 'citizenshipOtherDiv')" required>
+    <option value="">-- Select --</option>
+    <option>Malaysian</option>
+    <option>Singaporean</option>
+    <option>Other</option>
+  </select>
+  <div id="citizenshipOtherDiv" style="display: none;">
+    <label>If Other, specify:</label>
+    <input type="text" name="citizenshipOther" />
+  </div>
+
+  <div class="button-row">
+    <button type="button" onclick="nextSection()">Next</button>
+  </div>
 </div>
 
-<script>
-  const form = document.getElementById("multiStepForm");
-  const sections = document.querySelectorAll(".form-section");
-  let currentStep = 0;
+<!-- SECTION 2: Contact -->
+<div class="form-section">
+  <h2>Contact & Passport Info</h2>
 
-  function showSection(index) {
-    sections.forEach((s, i) => {
-      s.classList.toggle("active", i === index);
-    });
-    const progress = document.getElementById("progress");
-    progress.style.width = ((index + 1) / sections.length) * 100 + "%";
-  }
+  <label>Email *</label>
+  <input type="email" name="email" required />
 
-  function nextSection() {
-    const currentForm = sections[currentStep].querySelectorAll("input, select");
-    for (let field of currentForm) {
-      if (!field.checkValidity()) {
-        field.reportValidity();
-        return;
-      }
-    }
-    if (currentStep < sections.length - 1) {
-      currentStep++;
-      showSection(currentStep);
-    }
-  }
+  <label>Mobile Number *</label>
+  <input type="tel" name="mobile" required />
 
-  function prevSection() {
-    if (currentStep > 0) {
-      currentStep--;
-      showSection(currentStep);
-    }
-  }
+  <label>Passport Number *</label>
+  <input type="text" name="passport" required />
 
-  form.addEventListener("submit", function(e) {
-    e.preventDefault();
-    alert("Form submitted successfully!");
-    // TODO: Add fetch() POST to Power Automate here
-  });
+  <label>IC Number</label>
+  <input type="text" name="ic" />
 
-  function toggleOtherField(selectElement, targetDivId) {
-    const value = selectElement.value;
-    const div = document.getElementById(targetDivId);
-    if (value === "Other") {
-      div.style.display = "block";
-      div.querySelector("input").setAttribute("required", "required");
-    } else {
-      div.style.display = "none";
-      div.querySelector("input").removeAttribute("required");
-      div.querySelector("input").value = "";
-    }
-  }
-</script>
+  <label>Address in Malaysia *</label>
+  <textarea name="address" rows="4" required></textarea>
 
+  <div class="button-row">
+    <button type="button" onclick="prevSection()">Previous</button>
+    <button type="button" onclick="nextSection()">Next</button>
+  </div>
+</div>
+
+<!-- SECTION 3: Bank & Job Info -->
+<div class="form-section">
+  <h2>Bank, Tax & Job Info</h2>
+
+  <label>Bank Name *</label>
+  <select name="bank" onchange="toggleOtherField(this, 'otherBankDiv')" required>
+    <option value="">-- Select --</option>
+    <option>Maybank</option>
+    <option>CIMB</option>
+    <option>Other</option>
+  </select>
+  <div id="otherBankDiv" style="display: none;">
+    <label>If Other, specify:</label>
+    <input type="text" name="bankOther" />
+  </div>
+
+  <label>Bank Account Number *</label>
+  <input type="text" name="bankAccount" required />
+
+  <label>Income Tax Number</label>
+  <input type="text" name="taxNumber" />
+
+  <label>Position Applied For *</label>
+  <input type="text" name="positionApplied" required />
+
+  <label>Expected Joining Date *</label>
+  <input type="date" name="joiningDate" required />
+
+  <div class="button-row">
+    <button type="button" onclick="prevSection()">Previous</button>
+    <button type="button" onclick="nextSection()">Next</button>
+  </div>
+</div>
+
+<!-- SECTION 4: Employment History -->
+<div class="form-section">
+  <h2>Employment History</h2>
+
+  <div id="employmentSection">
+    <div class="employment-block">
+      <label>Company Name *</label>
+      <input type="text" name="company[]" required />
+
+      <label>From *</label>
+      <input type="date" name="from[]" required />
+
+      <label>To *</label>
+      <input type="date" name="to[]" required />
+
+      <label>Position *</label>
+      <input type="text" name="jobTitle[]" required />
+
+      <label>Salary</label>
+      <input type="number" name="salary[]" />
+
+      <label>Reference Person</label>
+      <input type="text" name="refName[]" />
+
+      <label>Reference Contact</label>
+      <input type="text" name="refPhone[]" />
+    </div>
+  </div>
+  <button type="button" onclick="addEmployment()">+ Add More</button>
+
+  <div class="button-row">
+    <button type="button" onclick="prevSection()">Previous</button>
+    <button type="button" onclick="nextSection()">Next</button>
+  </div>
+</div>
+
+<!-- SECTION 5: Certifications -->
+<div class="form-section">
+  <h2>Certifications</h2>
+
+  <div id="certSection">
+    <div class="cert-block">
+      <label>Certification Title *</label>
+      <input type="text" name="certTitle[]" required />
+
+      <label>Issuer *</label>
+      <input type="text" name="certIssuer[]" required />
+
+      <label>Date Completed *</label>
+      <input type="date" name="certDate[]" required />
+
+      <label>Certificate Number</label>
+      <input type="text" name="certNumber[]" />
+    </div>
+  </div>
+  <button type="button" onclick="addCertification()">+ Add More</button>
+
+  <div class="button-row">
+    <button type="button" onclick="prevSection()">Previous</button>
+    <button type="button" onclick="nextSection()">Next</button>
+  </div>
+</div>
+
+<!-- SECTION 6: Education -->
+<div class="form-section">
+  <h2>Education</h2>
+
+  <div id="eduSection">
+    <div class="edu-block">
+      <label>Institution *</label>
+      <input type="text" name="eduSchool[]" required />
+
+      <label>Degree *</label>
+      <input type="text" name="eduDegree[]" required />
+
+      <label>Stream</label>
+      <input type="text" name="eduStream[]" />
+
+      <label>Year of Passing *</label>
+      <input type="text" name="eduYear[]" required />
+
+      <label>GPA</label>
+      <input type="text" name="eduGPA[]" />
+    </div>
+  </div>
+  <button type="button" onclick="addEducation()">+ Add More</button>
+
+  <div class="button-row">
+    <button type="button" onclick="prevSection()">Previous</button>
+    <button type="button" onclick="nextSection()">Next</button>
+  </div>
+</div>
+
+<!-- SECTION 7: Family -->
+<div class="form-section">
+  <h2>Family Members</h2>
+
+  <div id="familySection">
+    <div class="family-block">
+      <label>Name *</label>
+      <input type="text" name="familyName[]" required />
+
+      <label>Relationship *</label>
+      <input type="text" name="familyRelation[]" required />
+
+      <label>Date of Birth</label>
+      <input type="date" name="familyDOB[]" />
+
+      <label>Passport Number</label>
+      <input type="text" name="familyPassport[]" />
+
+      <label>Occupation</label>
+      <input type="text" name="familyOccupation[]" />
+    </div>
+  </div>
+  <button type="button" onclick="addFamily()">+ Add More</button>
+
+  <div class="button-row">
+    <button type="button" onclick="prevSection()">Previous</button>
+    <button type="button" onclick="nextSection()">Next</button>
+  </div>
+</div>
+
+<!-- SECTION 8: Emergency Contact -->
+<div class="form-section">
+  <h2>Emergency Contact</h2>
+
+  <label>Name *</label>
+  <input type="text" name="emergencyName" required />
+
+  <label>Relationship *</label>
+  <input type="text" name="emergencyRelation" required />
+
+  <label>Phone *</label>
+  <input type="tel" name="emergencyPhone" required />
+
+  <label>Address *</label>
+  <textarea name="emergencyAddress" rows="3" required></textarea>
+
+  <label>Location *</label>
+  <select name="emergencyLocation" required>
+    <option value="">-- Select --</option>
+    <option>Malaysia</option>
+    <option>Home Country</option>
+  </select>
+
+  <div class="button-row">
+    <button type="button" onclick="prevSection()">Previous</button>
+    <button type="button" onclick="nextSection()">Next</button>
+  </div>
+</div>
+
+<!-- SECTION 9: Office Use -->
+<div class="form-section">
+  <h2>Office Use Only</h2>
+
+  <label>Employee ID</label>
+  <input type="text" name="employeeID" />
+
+  <label>Department</label>
+  <input type="text" name="department" />
+
+  <label>Manager</label>
+  <input type="text" name="manager" />
+
+  <div class="button-row">
+    <button type="button" onclick="prevSection()">Previous</button>
+    <button type="button" onclick="nextSection()">Next</button>
+  </div>
+</div>
+
+<!-- SECTION 10: Final Submit -->
+<div class="form-section">
+  <h2>Review & Submit</h2>
+  <p>Please review all information before submitting your application.</p>
+
+  <div class="button-row">
+    <button type="button" onclick="prevSection()">Previous</button>
+    <button type="submit">Submit</button>
+  </div>
+</div>
+
+    </form>
+  </div>
+  <div class="form-logo">
+    <img src="logo.png" alt="Company Logo" />
+  </div>
+</div>
+
+<script src="script.js"></script>
 </body>
 </html>
