@@ -114,9 +114,20 @@
   <label>Income Tax Number</label>
   <input type="text" name="taxNumber" />
 
-  <label>Position Applied For *</label>
-  <input type="text" name="positionApplied" required />
-
+   <label>Position Applied For *</label>
+<select name="positionApplied" required>
+  <option value="">-- Select Position --</option>
+  <option value="Software Engineer">Software Engineer</option>
+  <option value="Project Manager">Project Manager</option>
+  <option value="HR Executive">HR Executive</option>
+  <option value="Business Analyst">Business Analyst</option>
+  <option value="IT Support">IT Support</option>
+  <option value="Other">Other</option>
+</select>
+<div id="positionOtherDiv" style="display: none;">
+  <label>If Other, specify:</label>
+  <input type="text" name="positionOther" />
+</div>
   <label>Expected Joining Date *</label>
   <input type="date" name="joiningDate" required />
 
