@@ -67,10 +67,9 @@ function addFamily() {
 document.addEventListener("DOMContentLoaded", () => showSection(0));
 
 // ✅ Final Submit & Send to Power Automate
-document.getElementById("multiStepForm").addEventListener("submit", function(e) {
+document.getElementById("multiStepForm").addEventListener("submit", function (e) {
   e.preventDefault();
 
-  // Extract repeatable sections
   const extractGroup = (selector, fields) =>
     Array.from(document.querySelectorAll(selector)).map(group => {
       const entry = {};
@@ -81,7 +80,8 @@ document.getElementById("multiStepForm").addEventListener("submit", function(e) 
       return entry;
     });
 
-  const formData = {
+  // Group 1: Main personal & job details
+  const personalData = {
     fullName: document.querySelector('[name="fullName"]').value,
     dob: document.querySelector('[name="dob"]').value,
     age: parseInt(document.querySelector('[name="age"]').value),
@@ -100,24 +100,44 @@ document.getElementById("multiStepForm").addEventListener("submit", function(e) 
     bankAccount: document.querySelector('[name="bankAccount"]').value,
     taxNumber: document.querySelector('[name="taxNumber"]').value,
     positionApplied: document.querySelector('[name="positionApplied"]').value,
-    positionOther: document.querySelector('[name="positionOther"]').value,
+    positionOther: document.querySelector('[name="positionOther"]')?.value || "",
     joiningDate: document.querySelector('[name="joiningDate"]').value,
-    emergencyName: document.querySelector('[name="emergencyName"]').value,
-    emergencyRelation: document.querySelector('[name="emergencyRelation"]').value,
-    emergencyPhone: document.querySelector('[name="emergencyPhone"]').value,
-    emergencyAddress: document.querySelector('[name="emergencyAddress"]').value,
-    emergencyLocation: document.querySelector('[name="emergencyLocation"]').value,
+  };
+
+  // Group 2: Emergency Contact
+  const emergencyContact = {
+    name: document.querySelector('[name="emergencyName"]').value,
+    relation: document.querySelector('[name="emergencyRelation"]').value,
+    phone: document.querySelector('[name="emergencyPhone"]').value,
+    address: document.querySelector('[name="emergencyAddress"]').value,
+    location: document.querySelector('[name="emergencyLocation"]').value,
+  };
+
+  // Group 3: Office Use
+  const officeUse = {
     employeeID: document.querySelector('[name="employeeID"]').value,
     department: document.querySelector('[name="department"]').value,
     manager: document.querySelector('[name="manager"]').value,
-
-    employment: extractGroup(".employment-block", ["company", "from", "to", "jobTitle", "salary", "refName", "refPhone"]),
-    certifications: extractGroup(".cert-block", ["certTitle", "certIssuer", "certDate", "certNumber"]),
-    education: extractGroup(".edu-block", ["eduSchool", "eduDegree", "eduStream", "eduYear", "eduGPA"]),
-    family: extractGroup(".family-block", ["familyName", "familyRelation", "familyDOB", "familyPassport", "familyOccupation"])
   };
 
-  // 🔗 Replace below with your actual Power Automate HTTP POST URL
+  // Group 4: Repeatable sections
+  const employment = extractGroup(".employment-block", ["company", "from", "to", "jobTitle", "salary", "refName", "refPhone"]);
+  const certifications = extractGroup(".cert-block", ["certTitle", "certIssuer", "certDate", "certNumber"]);
+  const education = extractGroup(".edu-block", ["eduSchool", "eduDegree", "eduStream", "eduYear", "eduGPA"]);
+  const family = extractGroup(".family-block", ["familyName", "familyRelation", "familyDOB", "familyPassport", "familyOccupation"]);
+
+  // ✅ Final structured object
+  const formData = {
+    personalData,
+    emergencyContact,
+    officeUse,
+    employment,
+    certifications,
+    education,
+    family
+  };
+
+  // 🔗 Power Automate webhook endpoint (replace with yours)
   const flowUrl = "https://default801bb2d2c6584e6787728a97c96f3e.e2.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/7003fbb3a2f8436789a6895468c71bf1/triggers/manual/paths/invoke/?api-version=1&tenantId=tId&environmentName=Default-801bb2d2-c658-4e67-8772-8a97c96f3ee2&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=gSF_hOIn6LCfJXa9tfr5z8WrhbH05fq4nay_GBH7LBc";
 
   fetch(flowUrl, {
@@ -125,15 +145,15 @@ document.getElementById("multiStepForm").addEventListener("submit", function(e) 
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(formData)
   })
-  .then(res => {
-    if (res.ok) {
-      alert("✅ Form submitted successfully!");
-    } else {
-      alert("❌ Submission failed. Please try again.");
-    }
-  })
-  .catch(err => {
-    console.error("Error:", err);
-    alert("⚠️ Submission error: " + err.message);
-  });
+    .then(res => {
+      if (res.ok) {
+        alert("✅ Form submitted successfully!");
+      } else {
+        alert("❌ Submission failed. Please try again.");
+      }
+    })
+    .catch(err => {
+      console.error("Error:", err);
+      alert("⚠️ Submission error: " + err.message);
+    });
 });
