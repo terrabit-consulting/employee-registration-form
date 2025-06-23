@@ -75,22 +75,26 @@ function addFamily() {
 // Initialize first section on load
 document.addEventListener("DOMContentLoaded", () => showSection(0));
 
-// Collect data and submit or update to Power Automate
-function submitOrUpdateForm(isUpdate = false) {
-  const submitBtn = document.querySelector('button[type="submit"]');
-  submitBtn.disabled = true;
-  submitBtn.textContent = isUpdate ? "Updated..." : "Submitted...";
+// Collect data and submit to Power Automate
+document.getElementById("multiStepForm").addEventListener("submit", function (e) {
+  e.preventDefault();
 
+  const submitBtn = this.querySelector('button[type="submit"]');
+  submitBtn.disabled = true;
+  submitBtn.textContent = "Submitted...";
+
+  // Helper to extract multiple entries from a repeated block
   const extractGroup = (selector, fields) =>
     Array.from(document.querySelectorAll(selector)).map(group => {
       const entry = {};
       fields.forEach(field => {
-        const input = group.querySelector(`[name="${field}[]"]`);
+        const input = group.querySelector([name="${field}[]"]);
         entry[field] = input ? input.value : "";
       });
       return entry;
     });
 
+  // Collect individual data fields
   const personalData = {
     fullName: document.querySelector('[name="fullName"]').value,
     dob: document.querySelector('[name="dob"]').value,
@@ -140,11 +144,12 @@ function submitOrUpdateForm(isUpdate = false) {
     employment,
     certifications,
     education,
-    family,
-    mode: isUpdate ? "update" : "create"
+    family
   };
 
-  const flowUrl = "https://your-flow-url-here"; // Replace with your Power Automate URL
+  console.log("✅ Submitted JSON to Power Automate:", JSON.stringify(formData, null, 2));
+
+  const flowUrl = "https://default801bb2d2c6584e6787728a97c96f3e.e2.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/7003fbb3a2f8436789a6895468c71bf1/triggers/manual/paths/invoke/?api-version=1&tenantId=tId&environmentName=Default-801bb2d2-c658-4e67-8772-8a97c96f3ee2&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=gSF_hOIn6LCfJXa9tfr5z8WrhbH05fq4nay_GBH7LBc";
 
   fetch(flowUrl, {
     method: "POST",
@@ -153,25 +158,18 @@ function submitOrUpdateForm(isUpdate = false) {
   })
     .then(res => {
       if (res.ok) {
-        alert(`✅ Form ${isUpdate ? "updated" : "submitted"} successfully!`);
+        alert("✅ Form submitted successfully!");
+        // Button stays disabled
       } else {
-        alert(`❌ ${isUpdate ? "Update" : "Submission"} failed. Please try again.`);
+        alert("❌ Submission failed. Please try again.");
         submitBtn.disabled = false;
-        submitBtn.textContent = isUpdate ? "Update" : "Submit";
+        submitBtn.textContent = "Submit";
       }
     })
     .catch(err => {
       console.error("⚠️ Submission error:", err);
       alert("⚠️ Submission error: " + err.message);
       submitBtn.disabled = false;
-      submitBtn.textContent = isUpdate ? "Update" : "Submit";
+      submitBtn.textContent = "Submit";
     });
-}
-
-document.getElementById("multiStepForm").addEventListener("submit", function (e) {
-  e.preventDefault();
-  submitOrUpdateForm(false); // false means "create" mode
 });
-
-// Optional: Call this function with true to perform an update
-// submitOrUpdateForm(true);
