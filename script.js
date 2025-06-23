@@ -81,7 +81,7 @@ document.getElementById("multiStepForm").addEventListener("submit", function (e)
 
   const submitBtn = document.getElementById("submitBtn");
   submitBtn.disabled = true;
-  submitBtn.textContent = "Submitting...";
+  submitBtn.textContent = "Submitted";
 
   // Helper to extract multiple entries from a repeated block
   const extractGroup = (selector, fields) =>
