@@ -79,6 +79,10 @@ document.addEventListener("DOMContentLoaded", () => showSection(0));
 document.getElementById("multiStepForm").addEventListener("submit", function (e) {
   e.preventDefault();
 
+  const submitBtn = document.getElementById("submitBtn");
+  submitBtn.disabled = true;
+  submitBtn.textContent = "Submitting...";
+
   // Helper to extract multiple entries from a repeated block
   const extractGroup = (selector, fields) =>
     Array.from(document.querySelectorAll(selector)).map(group => {
@@ -157,12 +161,19 @@ document.getElementById("multiStepForm").addEventListener("submit", function (e)
     .then(res => {
       if (res.ok) {
         alert("✅ Form submitted successfully!");
+        // Optional: hide the form or reset it
+        // document.getElementById("multiStepForm").reset();
+        // submitBtn.style.display = "none";
       } else {
         alert("❌ Submission failed. Please try again.");
+        submitBtn.disabled = false;
+        submitBtn.textContent = "Submit";
       }
     })
     .catch(err => {
       console.error("⚠️ Submission error:", err);
       alert("⚠️ Submission error: " + err.message);
+      submitBtn.disabled = false;
+      submitBtn.textContent = "Submit";
     });
 });
