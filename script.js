@@ -50,7 +50,7 @@ function toggleOtherField(select, divId) {
 // Clone repeatable section blocks
 function addEmployment() {
   const block = document.querySelector(".employment-block").cloneNode(true);
-  block.querySelectorAll("input").forEach(input => input.value = "");
+  block.querySelectorAll("input, textarea").forEach(input => input.value = "");
   document.getElementById("employmentSection").appendChild(block);
 }
 
@@ -62,53 +62,85 @@ function addCertification() {
 
 function addEducation() {
   const block = document.querySelector(".edu-block").cloneNode(true);
-  block.querySelectorAll("input").forEach(input => input.value = "");
+  block.querySelectorAll("input, select").forEach(input => {
+    if(input.tagName.toLowerCase() === "select") {
+      input.selectedIndex = 0;
+    } else {
+      input.value = "";
+    }
+  });
   document.getElementById("eduSection").appendChild(block);
 }
 
 function addFamily() {
   const block = document.querySelector(".family-block").cloneNode(true);
-  block.querySelectorAll("input").forEach(input => input.value = "");
+  block.querySelectorAll("input, select").forEach(input => {
+    if(input.tagName.toLowerCase() === "select") {
+      input.selectedIndex = 0;
+    } else {
+      input.value = "";
+    }
+  });
   document.getElementById("familySection").appendChild(block);
 }
 
 // Initialize first section on load
 document.addEventListener("DOMContentLoaded", () => showSection(0));
 
+// Helper to extract multiple entries from a repeated block
+const extractGroup = (selector, fields) =>
+  Array.from(document.querySelectorAll(selector)).map(group => {
+    const entry = {};
+    fields.forEach(field => {
+      // For inputs with [] names, query accordingly
+      let input = group.querySelector(`[name="${field}[]"]`);
+      if (!input) {
+        // fallback for singular names in blocks (like marriageDate, numberOfKids in family-block)
+        input = group.querySelector(`[name="${field}"]`);
+      }
+      entry[field] = input ? input.value : "";
+    });
+    return entry;
+  });
+
 // Collect data and submit to Power Automate
 document.getElementById("multiStepForm").addEventListener("submit", function (e) {
   e.preventDefault();
 
-  const submitBtn = document.getElementById("submitBtn");
-  submitBtn.disabled = true;
-  submitBtn.textContent = "Submitted";
-
-  // Helper to extract multiple entries from a repeated block
-  const extractGroup = (selector, fields) =>
-    Array.from(document.querySelectorAll(selector)).map(group => {
-      const entry = {};
-      fields.forEach(field => {
-        const input = group.querySelector(`[name="${field}[]"]`);
-        entry[field] = input ? input.value : "";
-      });
-      return entry;
-    });
-
-  // Collect individual data fields
+  // Personal Particulars
   const personalData = {
     fullName: document.querySelector('[name="fullName"]').value,
+    currentlyInMalaysia: document.querySelector('[name="currentlyInMalaysia"]').value,
+    age: document.querySelector('[name="age"]').value ? parseInt(document.querySelector('[name="age"]').value) : null,
     dob: document.querySelector('[name="dob"]').value,
-    age: parseInt(document.querySelector('[name="age"]').value),
-    gender: document.querySelector('[name="gender"]').value,
+    stateOfBirth: document.querySelector('[name="stateOfBirth"]').value,
     maritalStatus: document.querySelector('[name="maritalStatus"]').value,
     maritalOther: document.querySelector('[name="maritalOther"]').value,
+    gender: document.querySelector('[name="gender"]').value,
     citizenship: document.querySelector('[name="citizenship"]').value,
     citizenshipOther: document.querySelector('[name="citizenshipOther"]').value,
+    race: document.querySelector('[name="race"]').value,
+    religion: document.querySelector('[name="religion"]').value,
+    primaryPassport: document.querySelector('[name="primaryPassport"]').value,
+    passportPlaceOfIssue: document.querySelector('[name="passportPlaceOfIssue"]').value,
+    passportDateOfIssue: document.querySelector('[name="passportDateOfIssue"]').value,
+    passportDateOfExpiry: document.querySelector('[name="passportDateOfExpiry"]').value,
+    icNumber: document.querySelector('[name="icNumber"]').value,
+    homeCountryAddress: document.querySelector('[name="homeCountryAddress"]').value,
+    yearsOfStayHome: document.querySelector('[name="yearsOfStayHome"]').value ? parseInt(document.querySelector('[name="yearsOfStayHome"]').value) : null,
+    completeAddressMalaysia: document.querySelector('[name="completeAddressMalaysia"]').value,
+    yearsOfStayMalaysia: document.querySelector('[name="yearsOfStayMalaysia"]').value ? parseInt(document.querySelector('[name="yearsOfStayMalaysia"]').value) : null,
+    expectedJoiningDate: document.querySelector('[name="expectedJoiningDate"]').value,
+    visaCollectionCentre: document.querySelector('[name="visaCollectionCentre"]').value,
+    mothersMaidenName: document.querySelector('[name="mothersMaidenName"]').value,
     email: document.querySelector('[name="email"]').value,
+    durationStayFrom: document.querySelector('[name="durationStayFrom"]').value,
+    durationStayTo: document.querySelector('[name="durationStayTo"]').value,
+    telHome: document.querySelector('[name="telHome"]').value,
+    whatsappNo: document.querySelector('[name="whatsappNo"]').value,
     mobile: document.querySelector('[name="mobile"]').value,
-    passport: document.querySelector('[name="passport"]').value,
-    ic: document.querySelector('[name="ic"]').value,
-    address: document.querySelector('[name="address"]').value,
+    linkedInId: document.querySelector('[name="linkedInId"]').value,
+    facebook: document.querySelector('[name="facebook"]').value,
     bank: document.querySelector('[name="bank"]').value,
     bankOther: document.querySelector('[name="bankOther"]').value,
     bankAccount: document.querySelector('[name="bankAccount"]').value,
@@ -118,6 +150,7 @@ document.getElementById("multiStepForm").addEventListener("submit", function (e)
     joiningDate: document.querySelector('[name="joiningDate"]').value,
   };
 
+  // Emergency Contact
   const emergencyContact = {
     name: document.querySelector('[name="emergencyName"]').value,
     relation: document.querySelector('[name="emergencyRelation"]').value,
@@ -126,16 +159,50 @@ document.getElementById("multiStepForm").addEventListener("submit", function (e)
     location: document.querySelector('[name="emergencyLocation"]').value,
   };
 
+  // Office Use Only
   const officeUse = {
-    employeeID: document.querySelector('[name="employeeID"]').value,
+    costCenterCode: document.querySelector('[name="costCenterCode"]').value,
+    costCenterName: document.querySelector('[name="costCenterName"]').value,
+    actualJoiningDate: document.querySelector('[name="actualJoiningDate"]').value,
+    category: document.querySelector('[name="category"]').value,
     department: document.querySelector('[name="department"]').value,
-    manager: document.querySelector('[name="manager"]').value,
+    project: document.querySelector('[name="project"]').value,
+    positionAppliedOffice: document.querySelector('[name="positionApplied"]').value,
+    officeUseDate: document.querySelector('[name="officeUseDate"]').value,
   };
 
-  const employment = extractGroup(".employment-block", ["company", "from", "to", "jobTitle", "salary", "refName", "refPhone"]);
-  const certifications = extractGroup(".cert-block", ["certTitle", "certIssuer", "certDate", "certNumber"]);
-  const education = extractGroup(".edu-block", ["eduSchool", "eduDegree", "eduStream", "eduYear", "eduGPA"]);
-  const family = extractGroup(".family-block", ["familyName", "familyRelation", "familyDOB", "familyPassport", "familyOccupation"]);
+  // Employment History - extended fields
+  const employment = extractGroup(".employment-block", [
+    "company", "from", "to", "employeeId", "contactNumber",
+    "jobTitle", "officeAddress", "refName", "refPhone",
+    "refPosition", "refEmail", "reasonForLeaving", "lastSalary"
+  ]);
+
+  // Certifications
+  const certifications = extractGroup(".cert-block", [
+    "certInstitution", "certCompletionDate", "certCourseTitle", "certNumber"
+  ]);
+
+  // Education
+  const education = extractGroup(".edu-block", [
+    "eduSchool", "eduInstitute", "eduYear", "eduGraduated", "eduDegree", "eduGPA", "eduStream"
+  ]);
+
+  // Family
+  // Note: marriageDate and numberOfKids are singular fields, not arrays
+  const familyBlocks = document.querySelectorAll(".family-block");
+  const family = [];
+  familyBlocks.forEach(block => {
+    family.push({
+      marriageDate: block.querySelector('[name="marriageDate"]')?.value || "",
+      numberOfKids: block.querySelector('[name="numberOfKids"]')?.value || "",
+      familyName: block.querySelector('[name="familyName[]"]')?.value || "",
+      familyRelation: block.querySelector('[name="familyRelation[]"]')?.value || "",
+      familyPassport: block.querySelector('[name="familyPassport[]"]')?.value || "",
+      familyDOB: block.querySelector('[name="familyDOB[]"]')?.value || "",
+      familyOccupation: block.querySelector('[name="familyOccupation[]"]')?.value || "",
+    });
+  });
 
   // Final JSON payload
   const formData = {
@@ -161,19 +228,12 @@ document.getElementById("multiStepForm").addEventListener("submit", function (e)
     .then(res => {
       if (res.ok) {
         alert("✅ Form submitted successfully!");
-        // Optional: hide the form or reset it
-        // document.getElementById("multiStepForm").reset();
-        // submitBtn.style.display = "none";
       } else {
         alert("❌ Submission failed. Please try again.");
-        submitBtn.disabled = false;
-        submitBtn.textContent = "Submit";
       }
     })
     .catch(err => {
       console.error("⚠️ Submission error:", err);
       alert("⚠️ Submission error: " + err.message);
-      submitBtn.disabled = false;
-      submitBtn.textContent = "Submit";
     });
 });
