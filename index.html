@@ -19,25 +19,28 @@
       <!-- SECTION 1: Personal Particulars -->
       <div class="form-section active">
         <h2>Personal Particulars</h2>
-        <label>Full Name *</label>
+
+        <label>Full Name (as per passport/ IC) *</label>
         <input type="text" name="fullName" required />
 
-        <label>Date of Birth *</label>
-        <input type="date" name="dob" required />
-
-        <label>Age *</label>
-        <input type="number" name="age" required />
-
-        <label>Gender *</label>
-        <select name="gender" required>
+        <label>Currently in Malaysia</label>
+        <select name="currentlyInMalaysia">
           <option value="">-- Select --</option>
-          <option>Male</option>
-          <option>Female</option>
-          <option>Other</option>
+          <option>Yes</option>
+          <option>No</option>
         </select>
 
-        <label>Marital Status *</label>
-        <select name="maritalStatus" onchange="toggleOtherField(this, 'maritalOtherDiv')" required>
+        <label>Age</label>
+        <input type="number" name="age" />
+
+        <label>Date of Birth (DD/MM/YY) *</label>
+        <input type="date" name="dob" required />
+
+        <label>State of Birth</label>
+        <input type="text" name="stateOfBirth" />
+
+        <label>Marital Status</label>
+        <select name="maritalStatus" onchange="toggleOtherField(this, 'maritalOtherDiv')">
           <option value="">-- Select --</option>
           <option>Single</option>
           <option>Married</option>
@@ -47,6 +50,14 @@
           <label>If Other, specify:</label>
           <input type="text" name="maritalOther" />
         </div>
+
+        <label>Gender *</label>
+        <select name="gender" required>
+          <option value="">-- Select --</option>
+          <option>Male</option>
+          <option>Female</option>
+          <option>Other</option>
+        </select>
 
         <label>Citizenship *</label>
         <select name="citizenship" onchange="toggleOtherField(this, 'citizenshipOtherDiv')" required>
@@ -60,12 +71,78 @@
           <input type="text" name="citizenshipOther" />
         </div>
 
+        <label>Race</label>
+        <input type="text" name="race" />
+
+        <label>Religion</label>
+        <input type="text" name="religion" />
+
+        <label>Primary Passport *</label>
+        <input type="text" name="primaryPassport" required />
+
+        <label>Place of Issue</label>
+        <input type="text" name="passportPlaceOfIssue" />
+
+        <label>Date of Issue</label>
+        <input type="date" name="passportDateOfIssue" />
+
+        <label>Date of Expiry</label>
+        <input type="date" name="passportDateOfExpiry" />
+
+        <label>IC Number</label>
+        <input type="text" name="icNumber" />
+
+        <label>Home Country Address *</label>
+        <textarea name="homeCountryAddress" rows="3" required></textarea>
+
+        <label>No. of Years of Stay (Home) *</label>
+        <input type="number" name="yearsOfStayHome" required />
+
+        <label>Complete Address in Malaysia *</label>
+        <textarea name="completeAddressMalaysia" rows="3" required></textarea>
+
+        <label>No. of Years of Stay (Malaysia) *</label>
+        <input type="number" name="yearsOfStayMalaysia" required />
+
+        <label>Expected Date of Joining</label>
+        <input type="date" name="expectedJoiningDate" />
+
+        <label>Visa Collection Centre</label>
+        <input type="text" name="visaCollectionCentre" />
+
+        <label>Mother’s Maiden Name</label>
+        <input type="text" name="mothersMaidenName" />
+
+        <label>Email Address *</label>
+        <input type="email" name="email" required />
+
+        <label>Duration of Stay From</label>
+        <input type="date" name="durationStayFrom" />
+
+        <label>Duration of Stay To</label>
+        <input type="date" name="durationStayTo" />
+
+        <label>Tel (Home)</label>
+        <input type="text" name="telHome" />
+
+        <label>WhatsApp No</label>
+        <input type="text" name="whatsappNo" />
+
+        <label>Mobile No *</label>
+        <input type="tel" name="mobile" required />
+
+        <label>LinkedIn ID</label>
+        <input type="text" name="linkedInId" />
+
+        <label>Facebook</label>
+        <input type="text" name="facebook" />
+
         <div class="button-row">
           <button type="button" onclick="nextSection()">Next</button>
         </div>
       </div>
 
-      <!-- SECTION 2: Contact -->
+      <!-- SECTION 2: Contact & Passport Info -->
       <div class="form-section">
         <h2>Contact & Passport Info</h2>
 
@@ -143,18 +220,42 @@
           <div class="employment-block">
             <label>Company Name *</label>
             <input type="text" name="company[]" required />
+
             <label>From *</label>
             <input type="date" name="from[]" required />
+
             <label>To *</label>
             <input type="date" name="to[]" required />
+
+            <label>Employee ID</label>
+            <input type="text" name="employeeId[]" />
+
+            <label>Contact Number</label>
+            <input type="text" name="contactNumber[]" />
+
             <label>Position *</label>
             <input type="text" name="jobTitle[]" required />
-            <label>Salary</label>
-            <input type="number" name="salary[]" />
-            <label>Reference Person</label>
+
+            <label>Office Address</label>
+            <textarea name="officeAddress[]" rows="2"></textarea>
+
+            <label>Reference Name</label>
             <input type="text" name="refName[]" />
-            <label>Reference Contact</label>
+
+            <label>Reference Contact No</label>
             <input type="text" name="refPhone[]" />
+
+            <label>Reference Position</label>
+            <input type="text" name="refPosition[]" />
+
+            <label>Reference Email ID</label>
+            <input type="email" name="refEmail[]" />
+
+            <label>Reason For Leaving</label>
+            <textarea name="reasonForLeaving[]" rows="2"></textarea>
+
+            <label>Last Drawn Monthly Salary</label>
+            <input type="text" name="lastSalary[]" />
           </div>
         </div>
         <button type="button" onclick="addEmployment()">+ Add More</button>
@@ -169,14 +270,17 @@
         <h2>Certifications</h2>
         <div id="certSection">
           <div class="cert-block">
-            <label>Certification Title *</label>
-            <input type="text" name="certTitle[]" required />
-            <label>Issuer *</label>
-            <input type="text" name="certIssuer[]" required />
-            <label>Date Completed *</label>
-            <input type="date" name="certDate[]" required />
-            <label>Certificate Number</label>
-            <input type="text" name="certNumber[]" />
+            <label>Institution *</label>
+            <input type="text" name="certInstitution[]" required />
+
+            <label>Completion Date *</label>
+            <input type="date" name="certCompletionDate[]" required />
+
+            <label>Course Title *</label>
+            <input type="text" name="certCourseTitle[]" required />
+
+            <label>Certification No. *</label>
+            <input type="text" name="certNumber[]" required />
           </div>
         </div>
         <button type="button" onclick="addCertification()">+ Add More</button>
@@ -191,16 +295,30 @@
         <h2>Education</h2>
         <div id="eduSection">
           <div class="edu-block">
-            <label>Institution *</label>
+            <label>Name Of School / Univ. *</label>
             <input type="text" name="eduSchool[]" required />
+
+            <label>Institute Name *</label>
+            <input type="text" name="eduInstitute[]" required />
+
+            <label>Year Graduated *</label>
+            <input type="number" name="eduYear[]" required />
+
+            <label>Graduated (Yes / No) *</label>
+            <select name="eduGraduated[]" required>
+              <option value="">-- Select --</option>
+              <option>Yes</option>
+              <option>No</option>
+            </select>
+
             <label>Degree *</label>
             <input type="text" name="eduDegree[]" required />
-            <label>Stream</label>
-            <input type="text" name="eduStream[]" />
-            <label>Year of Passing *</label>
-            <input type="text" name="eduYear[]" required />
-            <label>GPA</label>
+
+            <label>GPA Score / %</label>
             <input type="text" name="eduGPA[]" />
+
+            <label>Stream *</label>
+            <input type="text" name="eduStream[]" required />
           </div>
         </div>
         <button type="button" onclick="addEducation()">+ Add More</button>
@@ -215,16 +333,32 @@
         <h2>Family Members</h2>
         <div id="familySection">
           <div class="family-block">
-            <label>Name *</label>
+            <label>Marriage Date *</label>
+            <input type="date" name="marriageDate" required />
+
+            <label>Number Of Kids *</label>
+            <input type="number" name="numberOfKids" required />
+
+            <label>Complete Name *</label>
             <input type="text" name="familyName[]" required />
+
             <label>Relationship *</label>
-            <input type="text" name="familyRelation[]" required />
-            <label>Date of Birth</label>
-            <input type="date" name="familyDOB[]" />
-            <label>Passport Number</label>
-            <input type="text" name="familyPassport[]" />
-            <label>Occupation</label>
-            <input type="text" name="familyOccupation[]" />
+            <select name="familyRelation[]" required>
+              <option value="">-- Select --</option>
+              <option>Spouse</option>
+              <option>Child</option>
+              <option>Parent</option>
+              <option>Other</option>
+            </select>
+
+            <label>Passport Number *</label>
+            <input type="text" name="familyPassport[]" required />
+
+            <label>Date Of Birth *</label>
+            <input type="date" name="familyDOB[]" required />
+
+            <label>Occupation *</label>
+            <input type="text" name="familyOccupation[]" required />
           </div>
         </div>
         <button type="button" onclick="addFamily()">+ Add More</button>
@@ -237,35 +371,81 @@
       <!-- SECTION 8: Emergency Contact -->
       <div class="form-section">
         <h2>Emergency Contact</h2>
-        <label>Name *</label>
+        <label>Full Name *</label>
         <input type="text" name="emergencyName" required />
+
         <label>Relationship *</label>
         <input type="text" name="emergencyRelation" required />
+
         <label>Phone *</label>
         <input type="tel" name="emergencyPhone" required />
+
         <label>Address *</label>
         <textarea name="emergencyAddress" rows="3" required></textarea>
+
         <label>Location *</label>
         <select name="emergencyLocation" required>
           <option value="">-- Select --</option>
           <option>Malaysia</option>
           <option>Home Country</option>
         </select>
+
         <div class="button-row">
           <button type="button" onclick="prevSection()">Previous</button>
           <button type="button" onclick="nextSection()">Next</button>
         </div>
       </div>
 
-      <!-- SECTION 9: Office Use -->
+      <!-- SECTION 9: Office Use Only -->
       <div class="form-section">
         <h2>Office Use Only</h2>
-        <label>Employee ID</label>
-        <input type="text" name="employeeID" />
-        <label>Department</label>
-        <input type="text" name="department" />
-        <label>Manager</label>
-        <input type="text" name="manager" />
+
+        <label>Cost Center Code</label>
+        <input type="text" name="costCenterCode" />
+
+        <label>Cost Center Name</label>
+        <input type="text" name="costCenterName" />
+
+        <label>Actual Joining Date *</label>
+        <input type="date" name="actualJoiningDate" required />
+
+        <label>Category *</label>
+        <select name="category" required>
+          <option value="">-- Select --</option>
+          <option>Permanent</option>
+          <option>Contract</option>
+          <option>Intern</option>
+          <option>Other</option>
+        </select>
+
+        <label>Department *</label>
+        <select name="department" required>
+          <option value="">-- Select --</option>
+          <option>IT</option>
+          <option>HR</option>
+          <option>Finance</option>
+          <option>Marketing</option>
+          <option>Operations</option>
+          <option>Other</option>
+        </select>
+
+        <label>Project</label>
+        <input type="text" name="project" />
+
+        <label>Position Applied for *</label>
+        <select name="positionApplied" required>
+          <option value="">-- Select --</option>
+          <option>Software Engineer</option>
+          <option>Project Manager</option>
+          <option>HR Executive</option>
+          <option>Business Analyst</option>
+          <option>IT Support</option>
+          <option>Other</option>
+        </select>
+
+        <label>Date</label>
+        <input type="date" name="officeUseDate" />
+
         <div class="button-row">
           <button type="button" onclick="prevSection()">Previous</button>
           <button type="button" onclick="nextSection()">Next</button>
@@ -273,15 +453,15 @@
       </div>
 
       <!-- SECTION 10: Final Submit -->
-<div class="form-section">
-  <h2>Review & Submit</h2>
-  <p>Please review all information before submitting your application.</p>
-  <div class="button-row">
-    <button type="button" onclick="prevSection()">Previous</button>
-    <button type="submit" id="submitBtn">Submit</button>
-  </div>
-  </div>
-  </form>
+      <div class="form-section">
+        <h2>Review & Submit</h2>
+        <p>Please review all information before submitting your application.</p>
+        <div class="button-row">
+          <button type="button" onclick="prevSection()">Previous</button>
+          <button type="submit" id="submitBtn">Submit</button>
+        </div>
+      </div>
+    </form>
   </div>
 
   <!-- Right: Logo -->
