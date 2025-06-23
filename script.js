@@ -79,7 +79,7 @@ document.addEventListener("DOMContentLoaded", () => showSection(0));
 function submitOrUpdateForm(isUpdate = false) {
   const submitBtn = document.querySelector('button[type="submit"]');
   submitBtn.disabled = true;
-  submitBtn.textContent = isUpdate ? "Updating..." : "Submitting...";
+  submitBtn.textContent = isUpdate ? "Updated..." : "Submitted...";
 
   const extractGroup = (selector, fields) =>
     Array.from(document.querySelectorAll(selector)).map(group => {
