@@ -2,6 +2,7 @@ let currentStep = 0;
 const sections = document.querySelectorAll(".form-section");
 const progress = document.getElementById("progress");
 
+// Show a specific section by index and update progress bar
 function showSection(index) {
   sections.forEach((section, i) => {
     section.classList.toggle("active", i === index);
@@ -9,6 +10,7 @@ function showSection(index) {
   progress.style.width = ((index + 1) / sections.length) * 100 + "%";
 }
 
+// Move to next section after validating current section fields
 function nextSection() {
   const fields = sections[currentStep].querySelectorAll("input, select, textarea");
   for (const field of fields) {
@@ -23,6 +25,7 @@ function nextSection() {
   }
 }
 
+// Move to previous section
 function prevSection() {
   if (currentStep > 0) {
     currentStep--;
@@ -30,6 +33,7 @@ function prevSection() {
   }
 }
 
+// Show or hide "Other" input based on dropdown value
 function toggleOtherField(select, divId) {
   const div = document.getElementById(divId);
   const input = div?.querySelector("input");
@@ -43,33 +47,39 @@ function toggleOtherField(select, divId) {
   }
 }
 
+// Clone repeatable section blocks
 function addEmployment() {
   const block = document.querySelector(".employment-block").cloneNode(true);
-  block.querySelectorAll("input").forEach(i => i.value = "");
+  block.querySelectorAll("input").forEach(input => input.value = "");
   document.getElementById("employmentSection").appendChild(block);
 }
+
 function addCertification() {
   const block = document.querySelector(".cert-block").cloneNode(true);
-  block.querySelectorAll("input").forEach(i => i.value = "");
+  block.querySelectorAll("input").forEach(input => input.value = "");
   document.getElementById("certSection").appendChild(block);
 }
+
 function addEducation() {
   const block = document.querySelector(".edu-block").cloneNode(true);
-  block.querySelectorAll("input").forEach(i => i.value = "");
+  block.querySelectorAll("input").forEach(input => input.value = "");
   document.getElementById("eduSection").appendChild(block);
 }
+
 function addFamily() {
   const block = document.querySelector(".family-block").cloneNode(true);
-  block.querySelectorAll("input").forEach(i => i.value = "");
+  block.querySelectorAll("input").forEach(input => input.value = "");
   document.getElementById("familySection").appendChild(block);
 }
 
+// Initialize first section on load
 document.addEventListener("DOMContentLoaded", () => showSection(0));
 
-// ✅ Final Submit & Send to Power Automate
+// Collect data and submit to Power Automate
 document.getElementById("multiStepForm").addEventListener("submit", function (e) {
   e.preventDefault();
 
+  // Helper to extract multiple entries from a repeated block
   const extractGroup = (selector, fields) =>
     Array.from(document.querySelectorAll(selector)).map(group => {
       const entry = {};
@@ -80,7 +90,7 @@ document.getElementById("multiStepForm").addEventListener("submit", function (e)
       return entry;
     });
 
-  // Group 1: Main personal & job details
+  // Collect individual data fields
   const personalData = {
     fullName: document.querySelector('[name="fullName"]').value,
     dob: document.querySelector('[name="dob"]').value,
@@ -104,7 +114,6 @@ document.getElementById("multiStepForm").addEventListener("submit", function (e)
     joiningDate: document.querySelector('[name="joiningDate"]').value,
   };
 
-  // Group 2: Emergency Contact
   const emergencyContact = {
     name: document.querySelector('[name="emergencyName"]').value,
     relation: document.querySelector('[name="emergencyRelation"]').value,
@@ -113,20 +122,18 @@ document.getElementById("multiStepForm").addEventListener("submit", function (e)
     location: document.querySelector('[name="emergencyLocation"]').value,
   };
 
-  // Group 3: Office Use
   const officeUse = {
     employeeID: document.querySelector('[name="employeeID"]').value,
     department: document.querySelector('[name="department"]').value,
     manager: document.querySelector('[name="manager"]').value,
   };
 
-  // Group 4: Repeatable sections
   const employment = extractGroup(".employment-block", ["company", "from", "to", "jobTitle", "salary", "refName", "refPhone"]);
   const certifications = extractGroup(".cert-block", ["certTitle", "certIssuer", "certDate", "certNumber"]);
   const education = extractGroup(".edu-block", ["eduSchool", "eduDegree", "eduStream", "eduYear", "eduGPA"]);
   const family = extractGroup(".family-block", ["familyName", "familyRelation", "familyDOB", "familyPassport", "familyOccupation"]);
 
-  // ✅ Final structured object
+  // Final JSON payload
   const formData = {
     personalData,
     emergencyContact,
@@ -137,8 +144,10 @@ document.getElementById("multiStepForm").addEventListener("submit", function (e)
     family
   };
 
-  // 🔗 Power Automate webhook endpoint (replace with yours)
-  const flowUrl = "https://default801bb2d2c6584e6787728a97c96f3e.e2.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/7003fbb3a2f8436789a6895468c71bf1/triggers/manual/paths/invoke/?api-version=1&tenantId=tId&environmentName=Default-801bb2d2-c658-4e67-8772-8a97c96f3ee2&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=gSF_hOIn6LCfJXa9tfr5z8WrhbH05fq4nay_GBH7LBc";
+  console.log("✅ Submitted JSON to Power Automate:", JSON.stringify(formData, null, 2));
+
+  // Replace with your actual Power Automate flow endpoint
+  const flowUrl = "https://your-webhook-url-from-power-automate";
 
   fetch(flowUrl, {
     method: "POST",
@@ -153,7 +162,7 @@ document.getElementById("multiStepForm").addEventListener("submit", function (e)
       }
     })
     .catch(err => {
-      console.error("Error:", err);
+      console.error("⚠️ Submission error:", err);
       alert("⚠️ Submission error: " + err.message);
     });
 });
