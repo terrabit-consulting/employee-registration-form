@@ -192,6 +192,21 @@ function addCertification() {
   clone.querySelectorAll('input').forEach(input => input.value = '');
   container.appendChild(clone);
 }
+function extractGroup(selector, fields) {
+  const blocks = document.querySelectorAll(selector);
+  const data = [];
+
+  blocks.forEach(block => {
+    const group = {};
+    fields.forEach(field => {
+      const input = block.querySelector(`[name="${field}[]"]`);
+      group[field] = input ? input.value : "";
+    });
+    data.push(group);
+  });
+
+  return data;
+}
 
 document.getElementById("multiStepForm").addEventListener("submit", function (e) {
   e.preventDefault();
