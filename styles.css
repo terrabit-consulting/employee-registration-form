@@ -59,6 +59,11 @@ textarea {
   font-family: inherit;
 }
 
+/* Highlight invalid field dynamically */
+.error-highlight {
+  border: 2px solid red !important;
+}
+
 /* Date inputs: consistent appearance */
 input[type="date"] {
   cursor: pointer;
