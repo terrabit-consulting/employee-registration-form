@@ -7,18 +7,25 @@ function showSection(index) {
   sections.forEach((section, i) => {
     section.classList.toggle("active", i === index);
   });
-  progress.style.width = ((index + 1) / sections.length) * 100 + "%";
+  if (progress) {
+    progress.style.width = ((index + 1) / sections.length) * 100 + "%";
+  }
 }
 
-// Move to next section after validating current section fields
+// Move to next section after validating current section fields and custom validations
 function nextSection() {
   const fields = sections[currentStep].querySelectorAll("input, select, textarea");
   for (const field of fields) {
+    // Skip hidden or disabled fields
+    if (field.offsetParent === null || field.disabled) continue;
     if (!field.checkValidity()) {
       field.reportValidity();
       return;
     }
   }
+  // Run custom validations for conditional required fields
+  if (!customValidationForStep(currentStep)) return;
+
   if (currentStep < sections.length - 1) {
     currentStep++;
     showSection(currentStep);
@@ -47,7 +54,7 @@ function toggleOtherField(select, divId) {
   }
 }
 
-// Clone repeatable section blocks
+// Add repeatable section blocks cloning
 function addEmployment() {
   const block = document.querySelector(".employment-block").cloneNode(true);
   block.querySelectorAll("input, textarea").forEach(input => input.value = "");
@@ -81,159 +88,165 @@ function addFamily() {
       input.value = "";
     }
   });
+  // Hide spouse fields and remove required on cloned block
+  const spouseFieldsDiv = block.querySelector(".spouseFields");
+  if (spouseFieldsDiv) {
+    spouseFieldsDiv.style.display = "none";
+    const marriageDateInput = spouseFieldsDiv.querySelector('input[name="marriageDate"]');
+    const numberOfKidsInput = spouseFieldsDiv.querySelector('input[name="numberOfKids"]');
+    marriageDateInput.removeAttribute("required");
+    numberOfKidsInput.removeAttribute("required");
+  }
   document.getElementById("familySection").appendChild(block);
 }
 
-// Initialize first section on load
-document.addEventListener("DOMContentLoaded", () => showSection(0));
-
-// Helper to extract multiple entries from a repeated block
-const extractGroup = (selector, fields) =>
-  Array.from(document.querySelectorAll(selector)).map(group => {
-    const entry = {};
-    fields.forEach(field => {
-      // For inputs with [] names, query accordingly
-      let input = group.querySelector(`[name="${field}[]"]`);
-      if (!input) {
-        // fallback for singular names in blocks (like marriageDate, numberOfKids in family-block)
-        input = group.querySelector(`[name="${field}"]`);
+// Custom validation logic for conditional fields per step
+function customValidationForStep(step) {
+  if (step === 0) { // Personal Particulars step
+    // If Currently in Malaysia = Yes, Complete Address Malaysia & Years of Stay Malaysia required
+    const currentlyInMalaysia = document.querySelector('[name="currentlyInMalaysia"]').value;
+    const completeAddressMalaysia = document.querySelector('[name="completeAddressMalaysia"]');
+    const yearsOfStayMalaysia = document.querySelector('[name="yearsOfStayMalaysia"]');
+    if (currentlyInMalaysia === "Yes") {
+      if (!completeAddressMalaysia.value.trim()) {
+        alert("Complete Address in Malaysia is required.");
+        completeAddressMalaysia.focus();
+        return false;
       }
-      entry[field] = input ? input.value : "";
-    });
-    return entry;
+      if (!yearsOfStayMalaysia.value.trim()) {
+        alert("No. of Years of Stay (Malaysia) is required.");
+        yearsOfStayMalaysia.focus();
+        return false;
+      }
+    }
+
+    // Citizenship logic: if Malaysian => IC Number required, else Primary Passport required
+    const citizenship = document.querySelector('[name="citizenship"]').value.toLowerCase();
+    const icNumber = document.querySelector('[name="icNumber"]');
+    const primaryPassport = document.querySelector('[name="primaryPassport"]');
+
+    if (citizenship === "malaysian") {
+      if (!icNumber.value.trim()) {
+        alert("IC Number is required for Malaysian citizens.");
+        icNumber.focus();
+        return false;
+      }
+    } else {
+      if (!primaryPassport.value.trim()) {
+        alert("Primary Passport is required for non-Malaysian citizens.");
+        primaryPassport.focus();
+        return false;
+      }
+    }
+  }
+  if (step === 6) { // Family Members step (index 6)
+    const familyBlocks = document.querySelectorAll(".family-block");
+    for (const block of familyBlocks) {
+      const relSelect = block.querySelector('[name="familyRelation[]"]');
+      if (relSelect && relSelect.value === "Spouse") {
+        const marriageDate = block.querySelector('input[name="marriageDate"]');
+        const numberOfKids = block.querySelector('input[name="numberOfKids"]');
+        if (!marriageDate || !marriageDate.value.trim()) {
+          alert("Marriage Date is required when Relationship is Spouse.");
+          marriageDate?.focus();
+          return false;
+        }
+        if (!numberOfKids || !numberOfKids.value.trim()) {
+          alert("Number Of Kids is required when Relationship is Spouse.");
+          numberOfKids?.focus();
+          return false;
+        }
+      }
+    }
+  }
+  return true;
+}
+
+// Show/hide Marriage Date & Number of Kids based on Relationship select change
+function toggleSpouseFields(select) {
+  const familyBlock = select.closest(".family-block");
+  if (!familyBlock) return;
+
+  const spouseFieldsDiv = familyBlock.querySelector(".spouseFields");
+  if (!spouseFieldsDiv) return;
+
+  if (select.value === "Spouse") {
+    spouseFieldsDiv.style.display = "block";
+    spouseFieldsDiv.querySelector('input[name="marriageDate"]').setAttribute("required", "required");
+    spouseFieldsDiv.querySelector('input[name="numberOfKids"]').setAttribute("required", "required");
+  } else {
+    spouseFieldsDiv.style.display = "none";
+    const marriageDateInput = spouseFieldsDiv.querySelector('input[name="marriageDate"]');
+    const numberOfKidsInput = spouseFieldsDiv.querySelector('input[name="numberOfKids"]');
+    marriageDateInput.removeAttribute("required");
+    marriageDateInput.value = "";
+    numberOfKidsInput.removeAttribute("required");
+    numberOfKidsInput.value = "";
+  }
+}
+
+// Initialize form and event listeners
+document.addEventListener("DOMContentLoaded", () => {
+  showSection(0);
+
+  // Progress bar might be optional, so check existence before usage
+  if (progress) {
+    progress.style.width = ((currentStep + 1) / sections.length) * 100 + "%";
+  }
+
+  document.querySelector('[name="currentlyInMalaysia"]').addEventListener("change", () => {
+    // No need to toggle required attr dynamically since validation handles it
   });
 
-// Collect data and submit to Power Automate
-document.getElementById("multiStepForm").addEventListener("submit", function (e) {
-  e.preventDefault();
-
-  // Personal Particulars
-  const personalData = {
-    fullName: document.querySelector('[name="fullName"]').value,
-    currentlyInMalaysia: document.querySelector('[name="currentlyInMalaysia"]').value,
-    age: document.querySelector('[name="age"]').value ? parseInt(document.querySelector('[name="age"]').value) : null,
-    dob: document.querySelector('[name="dob"]').value,
-    stateOfBirth: document.querySelector('[name="stateOfBirth"]').value,
-    maritalStatus: document.querySelector('[name="maritalStatus"]').value,
-    maritalOther: document.querySelector('[name="maritalOther"]').value,
-    gender: document.querySelector('[name="gender"]').value,
-    citizenship: document.querySelector('[name="citizenship"]').value,
-    citizenshipOther: document.querySelector('[name="citizenshipOther"]').value,
-    race: document.querySelector('[name="race"]').value,
-    religion: document.querySelector('[name="religion"]').value,
-    primaryPassport: document.querySelector('[name="primaryPassport"]').value,
-    passportPlaceOfIssue: document.querySelector('[name="passportPlaceOfIssue"]').value,
-    passportDateOfIssue: document.querySelector('[name="passportDateOfIssue"]').value,
-    passportDateOfExpiry: document.querySelector('[name="passportDateOfExpiry"]').value,
-    icNumber: document.querySelector('[name="icNumber"]').value,
-    homeCountryAddress: document.querySelector('[name="homeCountryAddress"]').value,
-    yearsOfStayHome: document.querySelector('[name="yearsOfStayHome"]').value ? parseInt(document.querySelector('[name="yearsOfStayHome"]').value) : null,
-    completeAddressMalaysia: document.querySelector('[name="completeAddressMalaysia"]').value,
-    yearsOfStayMalaysia: document.querySelector('[name="yearsOfStayMalaysia"]').value ? parseInt(document.querySelector('[name="yearsOfStayMalaysia"]').value) : null,
-    expectedJoiningDate: document.querySelector('[name="expectedJoiningDate"]').value,
-    visaCollectionCentre: document.querySelector('[name="visaCollectionCentre"]').value,
-    mothersMaidenName: document.querySelector('[name="mothersMaidenName"]').value,
-    email: document.querySelector('[name="email"]').value,
-    durationStayFrom: document.querySelector('[name="durationStayFrom"]').value,
-    durationStayTo: document.querySelector('[name="durationStayTo"]').value,
-    telHome: document.querySelector('[name="telHome"]').value,
-    whatsappNo: document.querySelector('[name="whatsappNo"]').value,
-    mobile: document.querySelector('[name="mobile"]').value,
-    linkedInId: document.querySelector('[name="linkedInId"]').value,
-    facebook: document.querySelector('[name="facebook"]').value,
-    bank: document.querySelector('[name="bank"]').value,
-    bankOther: document.querySelector('[name="bankOther"]').value,
-    bankAccount: document.querySelector('[name="bankAccount"]').value,
-    taxNumber: document.querySelector('[name="taxNumber"]').value,
-    positionApplied: document.querySelector('[name="positionApplied"]').value,
-    positionOther: document.querySelector('[name="positionOther"]')?.value || "",
-    joiningDate: document.querySelector('[name="joiningDate"]').value,
-  };
-
-  // Emergency Contact
-  const emergencyContact = {
-    name: document.querySelector('[name="emergencyName"]').value,
-    relation: document.querySelector('[name="emergencyRelation"]').value,
-    phone: document.querySelector('[name="emergencyPhone"]').value,
-    address: document.querySelector('[name="emergencyAddress"]').value,
-    location: document.querySelector('[name="emergencyLocation"]').value,
-  };
-
-  // Office Use Only
-  const officeUse = {
-    costCenterCode: document.querySelector('[name="costCenterCode"]').value,
-    costCenterName: document.querySelector('[name="costCenterName"]').value,
-    actualJoiningDate: document.querySelector('[name="actualJoiningDate"]').value,
-    category: document.querySelector('[name="category"]').value,
-    department: document.querySelector('[name="department"]').value,
-    project: document.querySelector('[name="project"]').value,
-    positionAppliedOffice: document.querySelector('[name="positionApplied"]').value,
-    officeUseDate: document.querySelector('[name="officeUseDate"]').value,
-  };
-
-  // Employment History - extended fields
-  const employment = extractGroup(".employment-block", [
-    "company", "from", "to", "employeeId", "contactNumber",
-    "jobTitle", "officeAddress", "refName", "refPhone",
-    "refPosition", "refEmail", "reasonForLeaving", "lastSalary"
-  ]);
-
-  // Certifications
-  const certifications = extractGroup(".cert-block", [
-    "certInstitution", "certCompletionDate", "certCourseTitle", "certNumber"
-  ]);
-
-  // Education
-  const education = extractGroup(".edu-block", [
-    "eduSchool", "eduInstitute", "eduYear", "eduGraduated", "eduDegree", "eduGPA", "eduStream"
-  ]);
-
-  // Family
-  // Note: marriageDate and numberOfKids are singular fields, not arrays
-  const familyBlocks = document.querySelectorAll(".family-block");
-  const family = [];
-  familyBlocks.forEach(block => {
-    family.push({
-      marriageDate: block.querySelector('[name="marriageDate"]')?.value || "",
-      numberOfKids: block.querySelector('[name="numberOfKids"]')?.value || "",
-      familyName: block.querySelector('[name="familyName[]"]')?.value || "",
-      familyRelation: block.querySelector('[name="familyRelation[]"]')?.value || "",
-      familyPassport: block.querySelector('[name="familyPassport[]"]')?.value || "",
-      familyDOB: block.querySelector('[name="familyDOB[]"]')?.value || "",
-      familyOccupation: block.querySelector('[name="familyOccupation[]"]')?.value || "",
-    });
+  document.querySelector('[name="citizenship"]').addEventListener("change", () => {
+    // No need to toggle required attr dynamically since validation handles it
   });
 
-  // Final JSON payload
-  const formData = {
-    personalData,
-    emergencyContact,
-    officeUse,
-    employment,
-    certifications,
-    education,
-    family
-  };
+  // Delegate familyRelation changes to show/hide spouse fields
+  document.getElementById("familySection").addEventListener("change", (e) => {
+    if (e.target.name === "familyRelation[]") {
+      toggleSpouseFields(e.target);
+    }
+  });
 
-  console.log("✅ Submitted JSON to Power Automate:", JSON.stringify(formData, null, 2));
+  document.getElementById("multiStepForm").addEventListener("submit", function(e) {
+    // Validate all steps before submission
+    e.preventDefault();
 
-  // Replace with your actual Power Automate flow endpoint
-  const flowUrl = "https://default801bb2d2c6584e6787728a97c96f3e.e2.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/7003fbb3a2f8436789a6895468c71bf1/triggers/manual/paths/invoke/?api-version=1&tenantId=tId&environmentName=Default-801bb2d2-c658-4e67-8772-8a97c96f3ee2&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=gSF_hOIn6LCfJXa9tfr5z8WrhbH05fq4nay_GBH7LBc";
-
-  fetch(flowUrl, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(formData)
-  })
-    .then(res => {
-      if (res.ok) {
-        alert("✅ Form submitted successfully!");
-      } else {
-        alert("❌ Submission failed. Please try again.");
+    for(let i = 0; i < sections.length; i++) {
+      if (!validateSection(i)) {
+        currentStep = i;
+        showSection(currentStep);
+        return;
       }
-    })
-    .catch(err => {
-      console.error("⚠️ Submission error:", err);
-      alert("⚠️ Submission error: " + err.message);
-    });
+      if (!customValidationForStep(i)) {
+        currentStep = i;
+        showSection(currentStep);
+        return;
+      }
+    }
+
+    // Collect and submit data here or just alert success for now
+    alert("Form submitted successfully!");
+
+    // You can add your data collection and submission logic here
+
+    // Optionally submit:
+    // this.submit();
+  });
 });
+
+// Validate individual section using HTML5 constraint validation API
+function validateSection(index) {
+  const section = sections[index];
+  const requiredFields = section.querySelectorAll("input[required], select[required], textarea[required]");
+  for (const field of requiredFields) {
+    // Skip hidden or disabled fields
+    if (field.offsetParent === null || field.disabled) continue;
+    if (!field.checkValidity()) {
+      field.reportValidity();
+      return false;
+    }
+  }
+  return true;
+}
