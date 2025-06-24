@@ -123,6 +123,16 @@ button:hover {
   border-radius: 5px;
 }
 
+/* Spouse fields container inside family-block */
+.spouseFields,
+#spouseFields {
+  background: #fff8e1;
+  border: 1px solid #ffc107;
+  padding: 10px 15px;
+  margin-bottom: 15px;
+  border-radius: 4px;
+}
+
 /* Style "Other" fields container and inputs */
 #maritalOtherDiv,
 #citizenshipOtherDiv,
