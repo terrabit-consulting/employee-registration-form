@@ -1,11 +1,10 @@
-/* General Layout */
+/* styles.css */
 body {
   font-family: Arial, sans-serif;
   margin: 0;
   background: #f4f4f4;
 }
 
-/* Form Container */
 .form-wrapper {
   display: flex;
   max-width: 1100px;
@@ -21,7 +20,6 @@ body {
   padding: 30px;
 }
 
-/* Logo Section */
 .form-logo {
   flex: 1;
   padding: 30px;
@@ -37,7 +35,6 @@ body {
   height: auto;
 }
 
-/* Labels and Inputs */
 label {
   display: block;
   margin-top: 15px;
@@ -45,9 +42,7 @@ label {
   color: #333;
 }
 
-input,
-select,
-textarea {
+input, select, textarea {
   width: 100%;
   padding: 8px;
   margin-top: 5px;
@@ -59,17 +54,10 @@ textarea {
   font-family: inherit;
 }
 
-/* Highlight invalid field dynamically */
-.error-highlight {
-  border: 2px solid red !important;
-}
-
-/* Date inputs: consistent appearance */
 input[type="date"] {
   cursor: pointer;
 }
 
-/* Buttons */
 button {
   background: #28a745;
   border: none;
@@ -86,13 +74,11 @@ button:hover {
   background: #218838;
 }
 
-/* Navigation Row */
 .button-row {
   margin-top: 30px;
   text-align: right;
 }
 
-/* Progress Bar */
 .progress-bar {
   height: 8px;
   background: #ddd;
@@ -109,7 +95,6 @@ button:hover {
   transition: width 0.4s ease;
 }
 
-/* Section Visibility */
 .form-section {
   display: none;
 }
@@ -118,7 +103,6 @@ button:hover {
   display: block;
 }
 
-/* Dynamic Blocks */
 .employment-block,
 .cert-block,
 .edu-block,
@@ -130,7 +114,6 @@ button:hover {
   border-radius: 5px;
 }
 
-/* Spouse fields container inside family-block */
 .spouseFields,
 #spouseFields {
   background: #fff8e1;
@@ -140,63 +123,26 @@ button:hover {
   border-radius: 4px;
 }
 
-/* Style "Other" fields container and inputs */
 #maritalOtherDiv,
 #citizenshipOtherDiv,
 #otherBankDiv,
-#positionOtherDiv {
+#positionOtherDiv1 {
   margin-top: 10px;
 }
 
 #maritalOtherDiv input,
 #citizenshipOtherDiv input,
 #otherBankDiv input,
-#positionOtherDiv input {
+#positionOtherDiv1 input {
   background: #ffffe0;
   border-color: #ffc107;
 }
 
-/* Highlight fields with validation error */
-input:invalid,
-select:invalid,
-textarea:invalid {
-  border: 2px solid red;
+/* Error highlight for required fields on validation fail */
+.error-highlight {
+  border: 2px solid red !important;
 }
 
-/* Malaysia residency fields highlight if required */
-#completeAddressMalaysia:required,
-#yearsOfStayMalaysia:required,
-[name="homeCountryAddress"]:required,
-[name="yearsOfStayHome"]:required {
-  border: 2px solid #ff6b6b;
-}
-
-/* Citizenship-related field highlight */
-#primaryPassport:required,
-#passportPlaceOfIssue:required,
-#passportDateOfIssue:required,
-#passportDateOfExpiry:required,
-#icNumber:required,
-#icPlaceOfIssue:required,
-#icDateOfIssue:required,
-#icDateOfExpiry:required {
-  border: 2px solid #ff6b6b;
-}
-
-/* Spouse specific inputs highlight */
-#spouseFields input:required,
-#spouseFields select:required {
-  border: 2px solid #ff6b6b;
-}
-
-/* Optional: error text styling */
-.error-msg {
-  color: red;
-  font-size: 13px;
-  margin-top: 5px;
-}
-
-/* Responsive */
 @media (max-width: 768px) {
   .form-wrapper {
     flex-direction: column;
