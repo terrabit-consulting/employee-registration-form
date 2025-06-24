@@ -137,6 +137,25 @@ function toggleCitizenshipFields() {
   }
 }
 
+function toggleMarriedFields(selectElem) {
+  const marriedDiv = document.getElementById('marriedFields');
+  const marriageDateField = document.getElementById('marriageDate');
+  const kidsCountField = document.getElementById('numberOfKids');
+
+  if (selectElem.value === 'Married') {
+    marriedDiv.style.display = 'block';
+    marriageDateField.required = true;
+    kidsCountField.required = true;
+  } else {
+    marriedDiv.style.display = 'none';
+    marriageDateField.required = false;
+    kidsCountField.required = false;
+    marriageDateField.value = '';
+    kidsCountField.value = '';
+  }
+}
+
+
 function addEmployment() {
   const container = document.getElementById('employmentSection');
   const firstBlock = container.querySelector('.employment-block');
