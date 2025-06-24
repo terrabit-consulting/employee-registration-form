@@ -4,27 +4,46 @@
   <meta charset="UTF-8" />
   <title>Employment Form</title>
   <link rel="stylesheet" href="styles.css" />
+  <style>
+    /* Basic styles for visibility */
+    .form-section { display: none; }
+    .form-section.active { display: block; }
+    .button-row { margin-top: 20px; }
+  </style>
 </head>
 <body>
 
 <div class="form-wrapper">
-  <!-- Left Form Panel -->
   <div class="form-container">
-    <!-- Progress Bar -->
     <div class="progress-bar">
       <div class="progress" id="progress"></div>
     </div>
 
-    <form id="multiStepForm">
+    <form id="multiStepForm" onsubmit="return validateForm()">
+
       <!-- SECTION 1: Personal Particulars -->
       <div class="form-section active">
         <h2>Personal Particulars</h2>
+
+        <label>Position Applied For *</label>
+        <select name="positionApplied" required>
+          <option value="">-- Select Position --</option>
+          <option>Software Engineer</option>
+          <option>Project Manager</option>
+          <option>HR Executive</option>
+          <option>Business Analyst</option>
+          <option>IT Support</option>
+          <option>Other</option>
+        </select>
+
+        <label>Expected Joining Date *</label>
+        <input type="date" name="joiningDate" required />
 
         <label>Full Name (as per passport/ IC) *</label>
         <input type="text" name="fullName" required />
 
         <label>Currently in Malaysia</label>
-        <select name="currentlyInMalaysia">
+        <select name="currentlyInMalaysia" id="currentlyInMalaysia" onchange="toggleMalaysiaFields()">
           <option value="">-- Select --</option>
           <option>Yes</option>
           <option>No</option>
@@ -60,7 +79,7 @@
         </select>
 
         <label>Citizenship *</label>
-        <select name="citizenship" onchange="toggleOtherField(this, 'citizenshipOtherDiv')" required>
+        <select name="citizenship" id="citizenship" onchange="toggleCitizenshipFields()" required>
           <option value="">-- Select --</option>
           <option>Malaysian</option>
           <option>Singaporean</option>
@@ -71,71 +90,23 @@
           <input type="text" name="citizenshipOther" />
         </div>
 
-        <label>Race</label>
-        <input type="text" name="race" />
-
-        <label>Religion</label>
-        <input type="text" name="religion" />
-
-        <label>Primary Passport *</label>
-        <input type="text" name="primaryPassport" required />
-
-        <label>Place of Issue</label>
-        <input type="text" name="passportPlaceOfIssue" />
-
-        <label>Date of Issue</label>
-        <input type="date" name="passportDateOfIssue" />
-
-        <label>Date of Expiry</label>
-        <input type="date" name="passportDateOfExpiry" />
-
         <label>IC Number</label>
-        <input type="text" name="icNumber" />
+        <input type="text" name="icNumber" id="icNumber" />
 
-        <label>Home Country Address *</label>
-        <textarea name="homeCountryAddress" rows="3" required></textarea>
-
-        <label>No. of Years of Stay (Home) *</label>
-        <input type="number" name="yearsOfStayHome" required />
+        <label>Primary Passport</label>
+        <input type="text" name="primaryPassport" id="primaryPassport" />
 
         <label>Complete Address in Malaysia *</label>
-        <textarea name="completeAddressMalaysia" rows="3" required></textarea>
+        <textarea name="completeAddressMalaysia" id="completeAddressMalaysia" rows="3"></textarea>
 
         <label>No. of Years of Stay (Malaysia) *</label>
-        <input type="number" name="yearsOfStayMalaysia" required />
+        <input type="number" name="yearsOfStayMalaysia" id="yearsOfStayMalaysia" />
 
-        <label>Expected Date of Joining</label>
-        <input type="date" name="expectedJoiningDate" />
-
-        <label>Visa Collection Centre</label>
-        <input type="text" name="visaCollectionCentre" />
-
-        <label>Mother’s Maiden Name</label>
-        <input type="text" name="mothersMaidenName" />
-
-        <label>Email Address *</label>
+        <label>Email *</label>
         <input type="email" name="email" required />
 
-        <label>Duration of Stay From</label>
-        <input type="date" name="durationStayFrom" />
-
-        <label>Duration of Stay To</label>
-        <input type="date" name="durationStayTo" />
-
-        <label>Tel (Home)</label>
-        <input type="text" name="telHome" />
-
-        <label>WhatsApp No</label>
-        <input type="text" name="whatsappNo" />
-
-        <label>Mobile No *</label>
+        <label>Mobile Number *</label>
         <input type="tel" name="mobile" required />
-
-        <label>LinkedIn ID</label>
-        <input type="text" name="linkedInId" />
-
-        <label>Facebook</label>
-        <input type="text" name="facebook" />
 
         <div class="button-row">
           <button type="button" onclick="nextSection()">Next</button>
@@ -147,10 +118,10 @@
         <h2>Contact & Passport Info</h2>
 
         <label>Email *</label>
-        <input type="email" name="email" required />
+        <input type="email" name="email2" required />
 
         <label>Mobile Number *</label>
-        <input type="tel" name="mobile" required />
+        <input type="tel" name="mobile2" required />
 
         <label>Passport Number *</label>
         <input type="text" name="passport" required />
@@ -158,7 +129,7 @@
         <label>IC Number</label>
         <input type="text" name="ic" />
 
-        <label>Address in Malaysia *</label>
+        <label>Complete Address in Malaysia *</label>
         <textarea name="address" rows="4" required></textarea>
 
         <div class="button-row">
@@ -190,7 +161,7 @@
         <input type="text" name="taxNumber" />
 
         <label>Position Applied For *</label>
-        <select name="positionApplied" onchange="toggleOtherField(this, 'positionOtherDiv')" required>
+        <select name="positionApplied2" onchange="toggleOtherField(this, 'positionOtherDiv')" required>
           <option value="">-- Select Position --</option>
           <option>Software Engineer</option>
           <option>Project Manager</option>
@@ -205,7 +176,7 @@
         </div>
 
         <label>Expected Joining Date *</label>
-        <input type="date" name="joiningDate" required />
+        <input type="date" name="joiningDate2" required />
 
         <div class="button-row">
           <button type="button" onclick="prevSection()">Previous</button>
@@ -265,22 +236,22 @@
         </div>
       </div>
 
-      <!-- SECTION 5: Certifications -->
+      <!-- SECTION 5: Certifications (fields NOT mandatory now) -->
       <div class="form-section">
         <h2>Certifications</h2>
         <div id="certSection">
           <div class="cert-block">
-            <label>Institution *</label>
-            <input type="text" name="certInstitution[]" required />
+            <label>Institution</label>
+            <input type="text" name="certInstitution[]" />
 
-            <label>Completion Date *</label>
-            <input type="date" name="certCompletionDate[]" required />
+            <label>Completion Date</label>
+            <input type="date" name="certCompletionDate[]" />
 
-            <label>Course Title *</label>
-            <input type="text" name="certCourseTitle[]" required />
+            <label>Course Title</label>
+            <input type="text" name="certCourseTitle[]" />
 
-            <label>Certification No. *</label>
-            <input type="text" name="certNumber[]" required />
+            <label>Certification No.</label>
+            <input type="text" name="certNumber[]" />
           </div>
         </div>
         <button type="button" onclick="addCertification()">+ Add More</button>
@@ -328,45 +299,48 @@
         </div>
       </div>
 
-      <!-- SECTION 7: Family -->
-      <div class="form-section">
-        <h2>Family Members</h2>
-        <div id="familySection">
-          <div class="family-block">
-            <label>Marriage Date *</label>
-            <input type="date" name="marriageDate" required />
+<!-- SECTION 7: Family Members -->
+<div class="form-section">
+  <h2>Family Members</h2>
+  <div id="familySection">
+    <div class="family-block">
+      <!-- Marriage Date and Number of Kids only show if Relationship is Spouse -->
+      <div class="spouseFields" style="display:none;">
+        <label>Marriage Date *</label>
+        <input type="date" name="marriageDate" />
 
-            <label>Number Of Kids *</label>
-            <input type="number" name="numberOfKids" required />
-
-            <label>Complete Name *</label>
-            <input type="text" name="familyName[]" required />
-
-            <label>Relationship *</label>
-            <select name="familyRelation[]" required>
-              <option value="">-- Select --</option>
-              <option>Spouse</option>
-              <option>Child</option>
-              <option>Parent</option>
-              <option>Other</option>
-            </select>
-
-            <label>Passport Number *</label>
-            <input type="text" name="familyPassport[]" required />
-
-            <label>Date Of Birth *</label>
-            <input type="date" name="familyDOB[]" required />
-
-            <label>Occupation *</label>
-            <input type="text" name="familyOccupation[]" required />
-          </div>
-        </div>
-        <button type="button" onclick="addFamily()">+ Add More</button>
-        <div class="button-row">
-          <button type="button" onclick="prevSection()">Previous</button>
-          <button type="button" onclick="nextSection()">Next</button>
-        </div>
+        <label>Number Of Kids *</label>
+        <input type="number" name="numberOfKids" />
       </div>
+
+      <label>Complete Name *</label>
+      <input type="text" name="familyName[]" required />
+
+      <label>Relationship *</label>
+      <select name="familyRelation[]" required onchange="toggleSpouseFields(this)">
+        <option value="">-- Select --</option>
+        <option>Spouse</option>
+        <option>Child</option>
+        <option>Parent</option>
+        <option>Other</option>
+      </select>
+
+      <label>Passport Number *</label>
+      <input type="text" name="familyPassport[]" required />
+
+      <label>Date Of Birth *</label>
+      <input type="date" name="familyDOB[]" required />
+
+      <label>Occupation *</label>
+      <input type="text" name="familyOccupation[]" required />
+    </div>
+  </div>
+  <button type="button" onclick="addFamily()">+ Add More</button>
+  <div class="button-row">
+    <button type="button" onclick="prevSection()">Previous</button>
+    <button type="button" onclick="nextSection()">Next</button>
+  </div>
+</div>
 
       <!-- SECTION 8: Emergency Contact -->
       <div class="form-section">
@@ -433,7 +407,7 @@
         <input type="text" name="project" />
 
         <label>Position Applied for *</label>
-        <select name="positionApplied" required>
+        <select name="positionApplied3" required>
           <option value="">-- Select --</option>
           <option>Software Engineer</option>
           <option>Project Manager</option>
@@ -461,16 +435,149 @@
           <button type="submit" id="submitBtn">Submit</button>
         </div>
       </div>
+
     </form>
   </div>
 
-  <!-- Right: Logo -->
   <div class="form-logo">
     <img src="logo.png" alt="Company Logo" />
   </div>
 </div>
 
+<script>
+// Navigation
+let currentSection = 0;
+const sections = document.querySelectorAll('.form-section');
+
+function showSection(index) {
+  sections.forEach((section, i) => {
+    section.classList.toggle('active', i === index);
+  });
+}
+function nextSection() {
+  if (!validateSection(currentSection)) return;
+  if (currentSection < sections.length - 1) {
+    currentSection++;
+    showSection(currentSection);
+  }
+}
+function prevSection() {
+  if (currentSection > 0) {
+    currentSection--;
+    showSection(currentSection);
+  }
+}
+
+// Field toggles
+function toggleOtherField(select, targetId) {
+  const div = document.getElementById(targetId);
+  div.style.display = select.value === 'Other' ? 'block' : 'none';
+}
+
+// Malaysia address mandatory toggle
+function toggleMalaysiaFields() {
+  const inMalaysia = document.getElementById('currentlyInMalaysia').value === 'Yes';
+  document.getElementById('completeAddressMalaysia').required = inMalaysia;
+  document.getElementById('yearsOfStayMalaysia').required = inMalaysia;
+}
+
+// Citizenship field requirement toggle
+function toggleCitizenshipFields() {
+  const citizenship = document.getElementById('citizenship').value;
+  document.getElementById('icNumber').required = (citizenship === 'Malaysian');
+  document.getElementById('primaryPassport').required = (citizenship !== 'Malaysian');
+}
+
+// Show Marriage Date & Number of Kids if Relationship = Spouse in family
+function toggleSpouseFields(select) {
+  const spouseDiv = document.getElementById('spouseFields');
+  const marriageDate = document.getElementById('marriageDate');
+  const numberOfKids = document.getElementById('numberOfKids');
+
+  if (select.value === 'Spouse') {
+    spouseDiv.style.display = 'block';
+    marriageDate.required = true;
+    numberOfKids.required = true;
+  } else {
+    spouseDiv.style.display = 'none';
+    marriageDate.required = false;
+    numberOfKids.required = false;
+    marriageDate.value = '';
+    numberOfKids.value = '';
+  }
+}
+
+// Add new blocks
+function addEmployment() {
+  const container = document.getElementById('employmentSection');
+  const newBlock = container.firstElementChild.cloneNode(true);
+  newBlock.querySelectorAll('input, textarea').forEach(el => el.value = '');
+  container.appendChild(newBlock);
+}
+function addCertification() {
+  const container = document.getElementById('certSection');
+  const newBlock = container.firstElementChild.cloneNode(true);
+  newBlock.querySelectorAll('input').forEach(el => el.value = '');
+  container.appendChild(newBlock);
+}
+function addEducation() {
+  const container = document.getElementById('eduSection');
+  const newBlock = container.firstElementChild.cloneNode(true);
+  newBlock.querySelectorAll('input, select').forEach(el => {
+    if(el.tagName === 'INPUT') el.value = '';
+    if(el.tagName === 'SELECT') el.selectedIndex = 0;
+  });
+  container.appendChild(newBlock);
+}
+function addFamily() {
+  const container = document.getElementById('familySection');
+  const newBlock = container.firstElementChild.cloneNode(true);
+  newBlock.querySelectorAll('input, select').forEach(el => {
+    el.value = '';
+    if(el.name === 'familyRelation[]') {
+      el.selectedIndex = 0;
+    }
+  });
+  container.appendChild(newBlock);
+}
+
+// Simple validation per section (can be extended)
+function validateSection(index) {
+  const section = sections[index];
+  const requiredFields = section.querySelectorAll('[required]');
+  for (const field of requiredFields) {
+    if (!field.value) {
+      alert('Please fill all required fields.');
+      field.focus();
+      return false;
+    }
+  }
+  return true;
+}
+
+// Full form validation before submit
+function validateForm() {
+  // Ensure dynamic requirements applied before validation
+  toggleMalaysiaFields();
+  toggleCitizenshipFields();
+
+  for(let i=0; i<sections.length; i++) {
+    if(!validateSection(i)) {
+      currentSection = i;
+      showSection(currentSection);
+      return false;
+    }
+  }
+  alert('Form submitted successfully!');
+  return true; // proceed with form submission
+}
+
+// Initialize
+showSection(currentSection);
+toggleMalaysiaFields();
+toggleCitizenshipFields();
+
 <!-- JavaScript -->
-<script src="script.js?v=13"></script>
+<script src="script.js?v=11"></script>
 </body>
 </html>
