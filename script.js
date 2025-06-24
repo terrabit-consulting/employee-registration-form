@@ -185,6 +185,21 @@ function toggleSpouseFields(select) {
   }
 }
 
+// Validate individual section using HTML5 constraint validation API
+function validateSection(index) {
+  const section = sections[index];
+  const requiredFields = section.querySelectorAll("input[required], select[required], textarea[required]");
+  for (const field of requiredFields) {
+    // Skip hidden or disabled fields
+    if (field.offsetParent === null || field.disabled) continue;
+    if (!field.checkValidity()) {
+      field.reportValidity();
+      return false;
+    }
+  }
+  return true;
+}
+
 // Initialize form and event listeners
 document.addEventListener("DOMContentLoaded", () => {
   showSection(0);
@@ -195,11 +210,11 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   document.querySelector('[name="currentlyInMalaysia"]').addEventListener("change", () => {
-    // No need to toggle required attr dynamically since validation handles it
+    // Optional: any dynamic required toggle logic here if needed
   });
 
   document.querySelector('[name="citizenship"]').addEventListener("change", () => {
-    // No need to toggle required attr dynamically since validation handles it
+    // Optional: any dynamic required toggle logic here if needed
   });
 
   // Delegate familyRelation changes to show/hide spouse fields
@@ -226,27 +241,8 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     }
 
-    // Collect and submit data here or just alert success for now
     alert("Form submitted successfully!");
 
-    // You can add your data collection and submission logic here
-
-    // Optionally submit:
-    // this.submit();
+    // Add your data submission logic here, e.g., AJAX, fetch, etc.
   });
 });
-
-// Validate individual section using HTML5 constraint validation API
-function validateSection(index) {
-  const section = sections[index];
-  const requiredFields = section.querySelectorAll("input[required], select[required], textarea[required]");
-  for (const field of requiredFields) {
-    // Skip hidden or disabled fields
-    if (field.offsetParent === null || field.disabled) continue;
-    if (!field.checkValidity()) {
-      field.reportValidity();
-      return false;
-    }
-  }
-  return true;
-}
