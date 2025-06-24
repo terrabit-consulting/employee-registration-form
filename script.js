@@ -280,7 +280,7 @@ document.getElementById("multiStepForm").addEventListener("submit", function (e)
       category: document.querySelector('[name="category"]').value,
       department: document.querySelector('[name="department"]').value,
       project: document.querySelector('[name="project"]').value,
-      positionApplied: document.querySelectorAll('[name="positionApplied"]')[1]?.value || '',
+      positionApplied: document.querySelectorAll('[name="officePositionApplied"]')[1]?.value || '',
       officeUseDate: document.querySelector('[name="officeUseDate"]').value,
     }
   };
