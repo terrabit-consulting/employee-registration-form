@@ -36,6 +36,8 @@
           <input type="text" name="fullName" required />
 	<label>Date of Birth *</label>
         <input type="date" name="dob" required />
+        <label>Age</label>
+        <input type="number" name="age" />
         <label>State of Birth</label>
         <input type="text" name="stateOfBirth" />
         <label>Marital Status</label>
@@ -43,12 +45,9 @@
           <option value="">-- Select --</option>
           <option>Single</option>
           <option>Married</option>
-          <option>Other</option>
+ 	 <option>Divorced</option>
+          <option>Widow/Widower</option>
         </select>
-        <div id="maritalOtherDiv" style="display:none">
-          <label>If Other, specify:</label>
-          <input type="text" name="maritalOther" />
-        </div>
         <label>Gender *</label>
         <select name="gender" required>
           <option value="">-- Select --</option>
