@@ -45,7 +45,9 @@ label {
   color: #333;
 }
 
-input, select, textarea {
+input,
+select,
+textarea {
   width: 100%;
   padding: 8px;
   margin-top: 5px;
@@ -147,6 +149,46 @@ button:hover {
 #positionOtherDiv input {
   background: #ffffe0;
   border-color: #ffc107;
+}
+
+/* Highlight fields with validation error */
+input:invalid,
+select:invalid,
+textarea:invalid {
+  border: 2px solid red;
+}
+
+/* Malaysia residency fields highlight if required */
+#completeAddressMalaysia:required,
+#yearsOfStayMalaysia:required,
+[name="homeCountryAddress"]:required,
+[name="yearsOfStayHome"]:required {
+  border: 2px solid #ff6b6b;
+}
+
+/* Citizenship-related field highlight */
+#primaryPassport:required,
+#passportPlaceOfIssue:required,
+#passportDateOfIssue:required,
+#passportDateOfExpiry:required,
+#icNumber:required,
+#icPlaceOfIssue:required,
+#icDateOfIssue:required,
+#icDateOfExpiry:required {
+  border: 2px solid #ff6b6b;
+}
+
+/* Spouse specific inputs highlight */
+#spouseFields input:required,
+#spouseFields select:required {
+  border: 2px solid #ff6b6b;
+}
+
+/* Optional: error text styling */
+.error-msg {
+  color: red;
+  font-size: 13px;
+  margin-top: 5px;
 }
 
 /* Responsive */
