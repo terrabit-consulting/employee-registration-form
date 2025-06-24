@@ -32,7 +32,7 @@
           </div>
           <label>Expected Joining Date *</label>
           <input type="date" name="joiningDate" required />
-          <label>Full Name *</label>
+          <label>Full Full Name (as per passport/ IC) *</label>
           <input type="text" name="fullName" required />
           <label>Currently in Malaysia *</label>
           <select name="currentlyInMalaysia" id="currentlyInMalaysia" onchange="toggleMalaysiaFields()" required>
@@ -40,10 +40,6 @@
             <option>Yes</option>
             <option>No</option>
           </select>
-          <label>Complete Address in Malaysia *</label>
-          <textarea name="completeAddressMalaysia" id="completeAddressMalaysia" rows="3"></textarea>
-          <label>No. of Years of Stay (Malaysia) *</label>
-          <input type="number" name="yearsOfStayMalaysia" id="yearsOfStayMalaysia" />
           <label>Citizenship *</label>
           <select name="citizenship" id="citizenship" onchange="toggleCitizenshipFields()" required>
             <option value="">-- Select --</option>
@@ -55,41 +51,79 @@
             <label>If Other, specify:</label>
             <input type="text" name="citizenshipOther" />
           </div>
+	<label>Race</label>
+        <input type="text" name="race" />
+        <label>Religion</label>
+        <input type="text" name="religion" />
+	 <label>Home Country Address *</label>
+         <textarea name="homeCountryAddress" rows="3" required></textarea>
+         <label>No. of Years of Stay (Home) *</label>
+         <input type="number" name="yearsOfStayHome" required />
+          <label>Complete Address in Malaysia </label>
+          <textarea name="completeAddressMalaysia" id="completeAddressMalaysia" rows="3"></textarea>
+          <label>No. of Years of Stay (Malaysia) *</label>
+          <input type="number" name="yearsOfStayMalaysia" id="yearsOfStayMalaysia" />
+          <label>Duration of Stay From</label>
+         <input type="date" name="durationStayFrom" />
+        <label>Duration of Stay To</label>
+        <input type="date" name="durationStayTo" />
           <label>IC Number</label>
           <input type="text" name="icNumber" id="icNumber" />
+	<label>Place of Issue</label>
+          <input type="text" name="icPlaceOfIssue" />
+          <label>Date of Issue</label>
+          <input type="date" name="icDateOfIssue" />
+         <label>Date of Expiry</label>
+         <input type="date" name="icDateOfExpiry" />
           <label>Primary Passport</label>
           <input type="text" name="primaryPassport" id="primaryPassport" />
-          <label>Email *</label>
-          <input type="email" name="email" required />
-          <label>Mobile Number *</label>
-          <input type="tel" name="mobile" required />
+       	  <label>Place of Issue</label>
+          <input type="text" name="passportPlaceOfIssue" />
+          <label>Date of Issue</label>
+          <input type="date" name="passportDateOfIssue" />
+         <label>Date of Expiry</label>
+         <input type="date" name="passportDateOfExpiry" />
+        <label>Visa Collection Centre</label>
+        <input type="text" name="visaCollectionCentre" />
+        <label>Mother’s Maiden Name</label>
+        <input type="text" name="mothersMaidenName" />
           <div class="button-row">
             <button type="button" onclick="nextSection()">Next</button>
           </div>
         </div>
 
-        <!-- Section 2: Contact & Passport Info -->
+        <!-- Section 2: Contact Info -->
         <div class="form-section">
-          <h2>Contact & Passport Info</h2>
+          <h2>Contact Info</h2>
           <label>Email *</label>
           <input type="email" name="email2" required />
           <label>Mobile Number *</label>
           <input type="tel" name="mobile2" required />
-          <label>Passport Number *</label>
-          <input type="text" name="passport" required />
-          <label>IC Number</label>
-          <input type="text" name="ic" />
-          <label>Complete Address in Malaysia *</label>
-          <textarea name="address" rows="4" required></textarea>
+	<label>Tel (Home)</label>
+        <input type="text" name="telHome" />
+        <label>WhatsApp No</label>
+        <input type="text" name="whatsappNo" />
+        <label>LinkedIn ID</label>
+        <input type="text" name="linkedInId" />
+        <label>Facebook</label>
+        <input type="text" name="facebook" />
+        <label>Job Location</label>
+        <select name="joblocation">
+          <option value="">-- Select --</option>
+          <option>Kuala Lumpur</option>
+          <option>Johor Bahru</option>
+	  <option>Penanag</option>
+	  <option>Selangor</option>
+        </select>
           <div class="button-row">
             <button type="button" onclick="prevSection()">Previous</button>
             <button type="button" onclick="nextSection()">Next</button>
           </div>
         </div>
 
-        <!-- Section 3: Bank & Job Info -->
+        <!-- Section 3: Bank Info -->
         <div class="form-section">
-          <h2>Bank, Tax & Job Info</h2>
+          <h2>Bank Info</h2>
           <label>Bank Name *</label>
           <select name="bank" onchange="toggleOtherField(this, 'otherBankDiv')" required>
             <option value="">-- Select --</option>
@@ -103,22 +137,18 @@
           </div>
           <label>Bank Account Number *</label>
           <input type="text" name="bankAccount" required />
+          <label>Bank Account Type *</label>
+          <input type="text" name="accountType" />
           <label>Income Tax Number</label>
           <input type="text" name="taxNumber" />
-          <label>Position Applied For *</label>
-          <select name="positionApplied2" onchange="toggleOtherField(this, 'positionOtherDiv2')" required>
-            <option value="">-- Select Position --</option>
-            <option>Software Engineer</option>
-            <option>Project Manager</option>
-            <option>HR Executive</option>
-            <option>Business Analyst</option>
-            <option>IT Support</option>
-            <option>Other</option>
-          </select>
-          <div id="positionOtherDiv2" style="display:none">
-            <label>If Other, specify:</label>
-            <input type="text" name="positionOther2" />
-          </div>
+         <label>EPF Number</label>
+        <input type="text" name="epfNumber" />
+         <label>EPF Rate(11%)</label>
+        <input type="text" name="epfRate" />
+        <label>SOCSO Number</label>
+        <input type="text" name="socsoNumber" />
+        <label>Major Skill Set</label>
+        <input type="text" name="majorSkillSet" required />
           <div class="button-row">
             <button type="button" onclick="prevSection()">Previous</button>
             <button type="button" onclick="nextSection()">Next</button>
@@ -182,8 +212,12 @@
                 <option>Child</option>
                 <option>Parent</option>
               </select>
-              <label>Contact Number</label>
-              <input type="text" name="familyContact[]" />
+              <label>Passport Number</label>
+              <input type="text" name="familyPassport[]" required />
+              <label>Date Of Birth</label>
+              <input type="text" name="familyDob[]" required />
+              <label>Occupation</label>
+              <input type="text" name="familyOccupation[]" />
             </div>
           </div>
           <button type="button" onclick="addFamily()">+ Add More</button>
@@ -257,6 +291,6 @@
       <img src="logo.png" alt="Company Logo" />
     </div>
   </div>
-  <script src="script.js?v=21"></script>
+  <script src="script.js"></script>
 </body>
 </html>
