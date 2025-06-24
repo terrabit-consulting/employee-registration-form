@@ -38,16 +38,10 @@ function validateSection(index) {
 
   for (const field of requiredFields) {
     if (field.offsetParent === null) continue;
-    const fieldValue = (field.type === 'checkbox' || field.type === 'radio')
-      ? field.checked
-      : field.value.trim();
 
-    if (!fieldValue) {
-      if (!field.classList.contains('error-highlight')) {
-        field.classList.add('error-highlight');
-      }
-      const label = field.previousElementSibling?.textContent?.trim() || field.name;
-      alert(`Please fill the "${label}" field.`);
+    if (!field.checkValidity()) {
+      field.classList.add('error-highlight');
+      alert(field.validationMessage); // shows default browser message like "Please enter a valid email"
       field.focus();
       isValid = false;
       break;
@@ -55,6 +49,7 @@ function validateSection(index) {
       field.classList.remove('error-highlight');
     }
   }
+
   return isValid;
 }
 
