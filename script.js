@@ -198,7 +198,9 @@ function addCertification() {
   container.appendChild(clone);
 }
 
-function validateForm() {
+document.getElementById("multiStepForm").addEventListener("submit", function (e) {
+  e.preventDefault();
+
   toggleMalaysiaFields();
   toggleCitizenshipFields();
 
@@ -206,13 +208,107 @@ function validateForm() {
     if (!validateSection(i)) {
       currentSection = i;
       showSection(currentSection);
-      return false;
+      return;
     }
   }
 
-  alert('Form submitted successfully!');
-  return true;
-}
+  const formData = {
+    personalData: {
+      positionApplied: document.querySelector('[name="positionApplied"]').value,
+      positionOther1: document.querySelector('[name="positionOther1"]')?.value || "",
+      joiningDate: document.querySelector('[name="joiningDate"]').value,
+      fullName: document.querySelector('[name="fullName"]').value,
+      dob: document.querySelector('[name="dob"]').value,
+      age: document.querySelector('[name="age"]').value,
+      stateOfBirth: document.querySelector('[name="stateOfBirth"]').value,
+      maritalStatus: document.querySelector('[name="maritalStatus"]').value,
+      marriageDate: document.querySelector('[name="marriageDate"]')?.value || "",
+      numberOfKids: document.querySelector('[name="numberOfKids"]')?.value || "",
+      gender: document.querySelector('[name="gender"]').value,
+      currentlyInMalaysia: document.querySelector('[name="currentlyInMalaysia"]').value,
+      citizenship: document.querySelector('[name="citizenship"]').value,
+      citizenshipOther: document.querySelector('[name="citizenshipOther"]')?.value || "",
+      race: document.querySelector('[name="race"]').value,
+      religion: document.querySelector('[name="religion"]').value,
+      homeCountryAddress: document.querySelector('[name="homeCountryAddress"]').value,
+      yearsOfStayHome: document.querySelector('[name="yearsOfStayHome"]').value,
+      completeAddressMalaysia: document.querySelector('[name="completeAddressMalaysia"]').value,
+      yearsOfStayMalaysia: document.querySelector('[name="yearsOfStayMalaysia"]').value,
+      durationStayFrom: document.querySelector('[name="durationStayFrom"]').value,
+      durationStayTo: document.querySelector('[name="durationStayTo"]').value,
+      icNumber: document.querySelector('[name="icNumber"]').value,
+      icPlaceOfIssue: document.querySelector('[name="icPlaceOfIssue"]').value,
+      icDateOfIssue: document.querySelector('[name="icDateOfIssue"]').value,
+      icDateOfExpiry: document.querySelector('[name="icDateOfExpiry"]').value,
+      primaryPassport: document.querySelector('[name="primaryPassport"]').value,
+      passportPlaceOfIssue: document.querySelector('[name="passportPlaceOfIssue"]').value,
+      passportDateOfIssue: document.querySelector('[name="passportDateOfIssue"]').value,
+      passportDateOfExpiry: document.querySelector('[name="passportDateOfExpiry"]').value,
+      visaCollectionCentre: document.querySelector('[name="visaCollectionCentre"]').value,
+      mothersMaidenName: document.querySelector('[name="mothersMaidenName"]').value,
+    },
+    contactInfo: {
+      email: document.querySelector('[name="email2"]').value,
+      mobile: document.querySelector('[name="mobile2"]').value,
+      telHome: document.querySelector('[name="telHome"]').value,
+      whatsappNo: document.querySelector('[name="whatsappNo"]').value,
+      linkedInId: document.querySelector('[name="linkedInId"]').value,
+      facebook: document.querySelector('[name="facebook"]').value,
+      jobLocation: document.querySelector('[name="joblocation"]').value
+    },
+    bankInfo: {
+      bank: document.querySelector('[name="bank"]').value,
+      bankOther: document.querySelector('[name="bankOther"]')?.value || "",
+      bankAccount: document.querySelector('[name="bankAccount"]').value,
+      accountType: document.querySelector('[name="accountType"]').value,
+      taxNumber: document.querySelector('[name="taxNumber"]').value,
+      epfNumber: document.querySelector('[name="epfNumber"]').value,
+      epfRate: document.querySelector('[name="epfRate"]').value,
+      socsoNumber: document.querySelector('[name="socsoNumber"]').value,
+      majorSkillSet: document.querySelector('[name="majorSkillSet"]').value,
+    },
+    employment: extractGroup(".employment-block", ["company", "from", "to", "employeeId", "contactNumber", "jobTitle", "officeAddress", "refName", "refPhone", "refPosition", "refEmail", "reasonForLeaving", "lastSalary"]),
+    education: extractGroup(".edu-block", ["eduSchool", "eduInstitute", "eduYear", "eduGraduated", "eduDegree", "eduGPA", "eduStream"]),
+    certifications: extractGroup(".cert-block", ["certInstitution", "certCompletionDate", "certCourseTitle", "certNumber"]),
+    family: extractGroup(".family-block", ["familyName", "familyRelation", "familyPassport", "familyDOB", "familyOccupation"]),
+    emergencyContact: {
+      name: document.querySelector('[name="emergencyName"]').value,
+      relation: document.querySelector('[name="emergencyRelation"]').value,
+      phone: document.querySelector('[name="emergencyPhone"]').value,
+      address: document.querySelector('[name="emergencyAddress"]').value,
+      location: document.querySelector('[name="emergencyLocation"]').value,
+    },
+    officeUse: {
+      costCenterCode: document.querySelector('[name="costCenterCode"]').value,
+      costCenterName: document.querySelector('[name="costCenterName"]').value,
+      actualJoiningDate: document.querySelector('[name="actualJoiningDate"]').value,
+      category: document.querySelector('[name="category"]').value,
+      department: document.querySelector('[name="department"]').value,
+      project: document.querySelector('[name="project"]').value,
+      positionApplied: document.querySelectorAll('[name="positionApplied"]')[1]?.value || '',
+      officeUseDate: document.querySelector('[name="officeUseDate"]').value,
+    }
+  };
+
+  const flowUrl = "https://default801bb2d2c6584e6787728a97c96f3e.e2.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/7003fbb3a2f8436789a6895468c71bf1/triggers/manual/paths/invoke/?api-version=1&tenantId=tId&environmentName=Default-801bb2d2-c658-4e67-8772-8a97c96f3ee2&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=gSF_hOIn6LCfJXa9tfr5z8WrhbH05fq4nay_GBH7LBc"; // Replace with actual Power Automate endpoint
+
+  fetch(flowUrl, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(formData)
+  })
+    .then(res => {
+      if (res.ok) {
+        alert("✅ Form submitted successfully!");
+      } else {
+        alert("❌ Submission failed. Please try again.");
+      }
+    })
+    .catch(err => {
+      console.error("⚠️ Submission error:", err);
+      alert("⚠️ Submission error: " + err.message);
+    });
+});
 
 document.addEventListener('DOMContentLoaded', () => {
   showSection(currentSection);
