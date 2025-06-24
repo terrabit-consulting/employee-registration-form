@@ -10,7 +10,6 @@ function showSection(index) {
   updateProgressBar(index);
 }
 
-// Update progress bar width
 function updateProgressBar(index) {
   const progress = document.getElementById('progress');
   const percent = ((index + 1) / sections.length) * 100;
@@ -32,16 +31,12 @@ function prevSection() {
   }
 }
 
-// Validate all required fields in current section
 function validateSection(index) {
   const section = sections[index];
   const requiredFields = section.querySelectorAll('[required]');
   for (const field of requiredFields) {
-    // For input/select/textarea fields
-    if (field.offsetParent === null) continue; // skip hidden fields
-
+    if (field.offsetParent === null) continue;
     if (field.type === 'checkbox' || field.type === 'radio') {
-      // If it's a checkbox or radio, check if any in group checked
       const groupName = field.name;
       const groupFields = section.querySelectorAll(`[name="${groupName}"]`);
       let checked = false;
@@ -62,18 +57,15 @@ function validateSection(index) {
   return true;
 }
 
-// Toggle display of "Other" text fields based on dropdown value
 function toggleOtherField(selectElement, targetDivId) {
   const div = document.getElementById(targetDivId);
   if (!div) return;
+  const input = div.querySelector('input');
   if (selectElement.value === 'Other') {
     div.style.display = 'block';
-    // Make the input inside required
-    const input = div.querySelector('input');
     if (input) input.required = true;
   } else {
     div.style.display = 'none';
-    const input = div.querySelector('input');
     if (input) {
       input.required = false;
       input.value = '';
@@ -81,14 +73,17 @@ function toggleOtherField(selectElement, targetDivId) {
   }
 }
 
-// Toggle fields related to Malaysia residency
 function toggleMalaysiaFields() {
   const isMalaysia = document.getElementById('currentlyInMalaysia').value === 'Yes';
   const addr = document.getElementById('completeAddressMalaysia');
   const years = document.getElementById('yearsOfStayMalaysia');
+  const homeAddr = document.querySelector('[name="homeCountryAddress"]');
+  const yearsHome = document.querySelector('[name="yearsOfStayHome"]');
 
   if (addr) addr.required = isMalaysia;
   if (years) years.required = isMalaysia;
+  if (homeAddr) homeAddr.required = true;
+  if (yearsHome) yearsHome.required = true;
 
   if (!isMalaysia) {
     if (addr) addr.value = '';
@@ -96,57 +91,119 @@ function toggleMalaysiaFields() {
   }
 }
 
-// Toggle citizenship-related fields
 function toggleCitizenshipFields() {
   const citizenship = document.getElementById('citizenship').value;
   const citizenshipOtherDiv = document.getElementById('citizenshipOtherDiv');
   const icNumber = document.getElementById('icNumber');
   const primaryPassport = document.getElementById('primaryPassport');
+  const icFields = [
+    document.querySelector('[name="icPlaceOfIssue"]'),
+    document.querySelector('[name="icDateOfIssue"]'),
+    document.querySelector('[name="icDateOfExpiry"]')
+  ];
+  const passportFields = [
+    document.querySelector('[name="passportPlaceOfIssue"]'),
+    document.querySelector('[name="passportDateOfIssue"]'),
+    document.querySelector('[name="passportDateOfExpiry"]')
+  ];
 
   if (citizenship === 'Other') {
     if (citizenshipOtherDiv) citizenshipOtherDiv.style.display = 'block';
-    if (icNumber) icNumber.required = false;
-    if (primaryPassport) primaryPassport.required = true;
   } else {
     if (citizenshipOtherDiv) citizenshipOtherDiv.style.display = 'none';
-    if (icNumber) icNumber.required = citizenship === 'Malaysian';
-    if (primaryPassport) primaryPassport.required = citizenship !== 'Malaysian';
-    if (citizenshipOtherDiv) {
-      const input = citizenshipOtherDiv.querySelector('input');
-      if (input) input.value = '';
-    }
+    const input = citizenshipOtherDiv.querySelector('input');
+    if (input) input.value = '';
+  }
+
+  if (citizenship === 'Malaysian') {
+    if (icNumber) icNumber.required = true;
+    icFields.forEach(f => f && (f.required = true));
+    if (primaryPassport) primaryPassport.required = false;
+    passportFields.forEach(f => f && (f.required = false));
+  } else {
+    if (icNumber) icNumber.required = false;
+    icFields.forEach(f => {
+      if (f) {
+        f.required = false;
+        f.value = '';
+      }
+    });
+    if (primaryPassport) primaryPassport.required = true;
+    passportFields.forEach(f => f && (f.required = true));
   }
 }
 
-// Add more Employment entries
+function toggleMaritalFields() {
+  const maritalStatus = document.querySelector('[name="maritalStatus"]').value;
+  let marriageDateField = document.getElementById('marriageDate');
+  let kidsCountField = document.getElementById('numberOfKids');
+
+  if (!marriageDateField) {
+    marriageDateField = document.createElement('input');
+    marriageDateField.type = 'date';
+    marriageDateField.name = 'marriageDate';
+    marriageDateField.id = 'marriageDate';
+    marriageDateField.required = true;
+    const label = document.createElement('label');
+    label.innerText = 'Date of Marriage *';
+    const target = document.querySelector('[name="maritalStatus"]').parentNode;
+    target.appendChild(label);
+    target.appendChild(marriageDateField);
+  }
+
+  if (!kidsCountField) {
+    kidsCountField = document.createElement('input');
+    kidsCountField.type = 'number';
+    kidsCountField.name = 'numberOfKids';
+    kidsCountField.id = 'numberOfKids';
+    kidsCountField.min = '0';
+    kidsCountField.required = true;
+    const label = document.createElement('label');
+    label.innerText = 'Number of Kids *';
+    marriageDateField.parentNode.appendChild(label);
+    marriageDateField.parentNode.appendChild(kidsCountField);
+  }
+
+  if (maritalStatus === 'Married') {
+    marriageDateField.style.display = 'block';
+    kidsCountField.style.display = 'block';
+    marriageDateField.required = true;
+    kidsCountField.required = true;
+  } else {
+    marriageDateField.style.display = 'none';
+    kidsCountField.style.display = 'none';
+    marriageDateField.required = false;
+    kidsCountField.required = false;
+    marriageDateField.value = '';
+    kidsCountField.value = '';
+  }
+}
+
 function addEmployment() {
   const container = document.getElementById('employmentSection');
   const firstBlock = container.querySelector('.employment-block');
   if (!firstBlock) return;
-
   const clone = firstBlock.cloneNode(true);
-  // Clear inputs in clone
-  clone.querySelectorAll('input').forEach(input => (input.value = ''));
+  clone.querySelectorAll('input, textarea').forEach(input => (input.value = ''));
   container.appendChild(clone);
 }
 
-// Add more Education entries
 function addEducation() {
   const container = document.getElementById('eduSection');
   const firstBlock = container.querySelector('.edu-block');
   if (!firstBlock) return;
-
   const clone = firstBlock.cloneNode(true);
-  clone.querySelectorAll('input').forEach(input => (input.value = ''));
+  clone.querySelectorAll('input, select').forEach(input => {
+    input.value = '';
+    if (input.tagName === 'SELECT') input.selectedIndex = 0;
+  });
   container.appendChild(clone);
 }
 
-// Add more Family entries
 function addFamily() {
   const container = document.getElementById('familySection');
   const firstBlock = container.querySelector('.family-block');
   if (!firstBlock) return;
-
   const clone = firstBlock.cloneNode(true);
   clone.querySelectorAll('input, select').forEach(el => {
     el.value = '';
@@ -155,22 +212,19 @@ function addFamily() {
   container.appendChild(clone);
 }
 
-// Add more Certification entries
 function addCertification() {
   const container = document.getElementById('certSection');
   const firstBlock = container.querySelector('.cert-block');
   if (!firstBlock) return;
-
   const clone = firstBlock.cloneNode(true);
   clone.querySelectorAll('input').forEach(input => (input.value = ''));
   container.appendChild(clone);
 }
 
-// Final form validation before submission
 function validateForm() {
   toggleMalaysiaFields();
   toggleCitizenshipFields();
-
+  toggleMaritalFields();
   for (let i = 0; i < sections.length; i++) {
     if (!validateSection(i)) {
       currentSection = i;
@@ -178,14 +232,22 @@ function validateForm() {
       return false;
     }
   }
-
   alert('Form submitted successfully!');
   return true;
 }
 
-// On page load, initialize form
 document.addEventListener('DOMContentLoaded', () => {
   showSection(currentSection);
   toggleMalaysiaFields();
   toggleCitizenshipFields();
+  toggleMaritalFields();
+
+  const maritalStatus = document.querySelector('[name="maritalStatus"]');
+  if (maritalStatus) maritalStatus.addEventListener('change', toggleMaritalFields);
+
+  const currentlyInMalaysia = document.getElementById('currentlyInMalaysia');
+  if (currentlyInMalaysia) currentlyInMalaysia.addEventListener('change', toggleMalaysiaFields);
+
+  const citizenship = document.getElementById('citizenship');
+  if (citizenship) citizenship.addEventListener('change', toggleCitizenshipFields);
 });
