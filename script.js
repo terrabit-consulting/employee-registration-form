@@ -34,17 +34,35 @@ function prevSection() {
 function validateSection(index) {
   const section = sections[index];
   const requiredFields = section.querySelectorAll('[required]');
+  const optionalEmails = section.querySelectorAll('input[type="email"]:not([required])');
   let isValid = true;
 
+  // First: validate all required fields
   for (const field of requiredFields) {
     if (field.offsetParent === null) continue;
 
     if (!field.checkValidity()) {
       field.classList.add('error-highlight');
-      alert(field.validationMessage); // shows default browser message like "Please enter a valid email"
+      alert(field.validationMessage);
       field.focus();
       isValid = false;
-      break;
+      return false;
+    } else {
+      field.classList.remove('error-highlight');
+    }
+  }
+
+  // Second: validate optional email fields (if filled)
+  for (const field of optionalEmails) {
+    if (field.offsetParent === null) continue;
+    const value = field.value.trim();
+
+    if (value !== '' && !field.checkValidity()) {
+      field.classList.add('error-highlight');
+      alert('Please enter a valid email address.');
+      field.focus();
+      isValid = false;
+      return false;
     } else {
       field.classList.remove('error-highlight');
     }
@@ -52,6 +70,7 @@ function validateSection(index) {
 
   return isValid;
 }
+
 
 function toggleOtherField(selectElement, targetDivId) {
   const div = document.getElementById(targetDivId);
