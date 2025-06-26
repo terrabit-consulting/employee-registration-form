@@ -131,7 +131,7 @@ function toggleCitizenshipFields() {
     const input = citizenshipOtherDiv?.querySelector('input');
     if (input) input.value = '';
 
-    if (citizenship === 'Malaysian') {
+    if (citizenship === 'Malaysia') {
       if (icNumber) icNumber.required = true;
       if (icPlace) icPlace.required = true;
       if (icIssue) icIssue.required = true;
